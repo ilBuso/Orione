@@ -1395,30 +1395,108 @@
 				)
 			)
 		)
+		(symbol "power:GND"
+			(power)
+			(pin_numbers hide)
+			(pin_names
+				(offset 0) hide)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "#PWR"
+				(at 0 -6.35 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Value" "GND"
+				(at 0 -3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "global power"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "GND_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 -1.27) (xy 1.27 -1.27) (xy 0 -2.54) (xy -1.27 -1.27) (xy 0 -1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "GND_1_1"
+				(pin power_in line
+					(at 0 0 270)
+					(length 0)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
 	)
 	(junction
 		(at 90.17 128.27)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "2b0516a2-cd6f-484a-8cdf-cb68ed97a0fd")
-	)
-	(junction
-		(at 113.03 73.66)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "686fbb0b-ffa5-4afc-9bc7-3de17f4834e3")
-	)
-	(junction
-		(at 90.17 115.57)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "6a919f43-c316-420a-a701-e080125ea8d6")
-	)
-	(junction
-		(at 113.03 87.63)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "7a1f87c5-ecf4-4c11-8342-9a6ff91a4d03")
 	)
 	(junction
 		(at 90.17 120.65)
@@ -1449,6 +1527,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "dd2402ba-f8ee-437a-9985-82a91d4d8776")
+	)
+	(junction
+		(at 90.17 133.35)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "fc1ca696-3c55-4341-837b-578f9b523fa4")
 	)
 	(no_connect
 		(at 90.17 105.41)
@@ -1504,6 +1588,16 @@
 	)
 	(wire
 		(pts
+			(xy 166.37 87.63) (xy 166.37 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "11106fa3-4b1b-4f21-96fa-fdd8659da6f9")
+	)
+	(wire
+		(pts
 			(xy 66.04 97.79) (xy 90.17 97.79)
 		)
 		(stroke
@@ -1514,16 +1608,6 @@
 	)
 	(wire
 		(pts
-			(xy 156.21 90.17) (xy 162.56 90.17)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "21d088de-6c90-483c-89af-f88a6856fb02")
-	)
-	(wire
-		(pts
 			(xy 90.17 123.19) (xy 90.17 125.73)
 		)
 		(stroke
@@ -1531,26 +1615,6 @@
 			(type default)
 		)
 		(uuid "3073bded-f67b-4392-a6be-f81d81cdbc93")
-	)
-	(wire
-		(pts
-			(xy 74.93 82.55) (xy 74.93 83.82)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "34dfe06d-01f1-4ff4-8a15-1d4a5d353fb4")
-	)
-	(wire
-		(pts
-			(xy 162.56 62.23) (xy 128.27 62.23)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3daa4e00-70a2-4975-ba91-292e979d2298")
 	)
 	(wire
 		(pts
@@ -1584,16 +1648,6 @@
 	)
 	(wire
 		(pts
-			(xy 119.38 87.63) (xy 119.38 115.57)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4bae8b6f-e0da-4703-8783-e886b86d74d2")
-	)
-	(wire
-		(pts
 			(xy 90.17 96.52) (xy 90.17 95.25)
 		)
 		(stroke
@@ -1601,16 +1655,6 @@
 			(type default)
 		)
 		(uuid "5277fb7e-e5af-484c-9d89-cd5ffd645dda")
-	)
-	(wire
-		(pts
-			(xy 128.27 73.66) (xy 161.29 73.66)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6254be7b-8270-40c0-80d6-6b49f1c36796")
 	)
 	(wire
 		(pts
@@ -1664,16 +1708,6 @@
 	)
 	(wire
 		(pts
-			(xy 102.87 87.63) (xy 113.03 87.63)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8355e455-a2fe-45ba-aec6-4260a8041424")
-	)
-	(wire
-		(pts
 			(xy 90.17 130.81) (xy 90.17 133.35)
 		)
 		(stroke
@@ -1681,16 +1715,6 @@
 			(type default)
 		)
 		(uuid "865940b0-2819-462a-a7ee-a7e2ffb124ec")
-	)
-	(wire
-		(pts
-			(xy 161.29 87.63) (xy 156.21 87.63)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "88046a71-5e1b-4ff8-9d27-6aa93b55bec8")
 	)
 	(wire
 		(pts
@@ -1724,13 +1748,13 @@
 	)
 	(wire
 		(pts
-			(xy 156.21 82.55) (xy 156.21 85.09)
+			(xy 90.17 133.35) (xy 90.17 137.16)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "afb24886-39d2-45ee-924b-b37d70e8a6b2")
+		(uuid "9f1ada93-6a63-494c-a819-17b2b0e6ef51")
 	)
 	(wire
 		(pts
@@ -1744,13 +1768,13 @@
 	)
 	(wire
 		(pts
-			(xy 74.93 82.55) (xy 156.21 82.55)
+			(xy 156.21 87.63) (xy 166.37 87.63)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "b175d6af-ebb9-41dd-a621-c25d76aca3e5")
+		(uuid "b42cfec4-4382-4459-832f-ba335ff10258")
 	)
 	(wire
 		(pts
@@ -1761,36 +1785,6 @@
 			(type default)
 		)
 		(uuid "bcf94e06-2d7c-4671-84b4-95f52bde248e")
-	)
-	(wire
-		(pts
-			(xy 113.03 73.66) (xy 113.03 87.63)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "be101370-c144-41c9-8aaf-ce7deb875539")
-	)
-	(wire
-		(pts
-			(xy 162.56 62.23) (xy 162.56 90.17)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c2b7dcce-17c5-42bf-b946-2598aaab256c")
-	)
-	(wire
-		(pts
-			(xy 113.03 62.23) (xy 113.03 73.66)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "cb09db04-30b8-4156-8090-c14934eaead1")
 	)
 	(wire
 		(pts
@@ -1814,33 +1808,13 @@
 	)
 	(wire
 		(pts
-			(xy 113.03 87.63) (xy 119.38 87.63)
+			(xy 156.21 90.17) (xy 165.1 90.17)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "d5f4fb73-d139-48b9-b5a2-8768a74163f0")
-	)
-	(wire
-		(pts
-			(xy 161.29 73.66) (xy 161.29 87.63)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d9afbba3-1c2c-4570-903a-3b55b1560001")
-	)
-	(wire
-		(pts
-			(xy 90.17 115.57) (xy 119.38 115.57)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e546d0cf-12e8-4f06-b3f0-437a709335ce")
+		(uuid "e27fe40a-d92d-4418-9285-9a5f627fc417")
 	)
 	(global_label "Row 5"
 		(shape input)
@@ -2479,6 +2453,72 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 90.17 137.16 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "1a042e09-bd0c-4d88-bc7e-a1a36cf91d4d")
+		(property "Reference" "#PWR06"
+			(at 90.17 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 90.17 142.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 90.17 137.16 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 90.17 137.16 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 90.17 137.16 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "daef2e44-be7a-4f93-9e43-20c2a9caef0a")
+		)
+		(instances
+			(project "orione-v1"
+				(path "/7c5d3dcd-7852-47e5-b807-2699349c9bda"
+					(reference "#PWR06")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Connector_Generic:Conn_02x10_Odd_Even")
 		(at 95.25 95.25 0)
 		(unit 1)
@@ -2812,33 +2852,17 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 124.46 62.23 90)
+		(lib_id "power:GND")
+		(at 102.87 87.63 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "78de336f-8691-4916-a45f-d8317d53f4e2")
-		(property "Reference" "R1"
-			(at 124.46 55.88 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "R"
-			(at 124.46 58.42 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
-			(at 124.46 64.008 90)
+		(uuid "62dfa429-8cef-42e2-9bde-784d18ebdd3f")
+		(property "Reference" "#PWR01"
+			(at 109.22 87.63 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2846,8 +2870,17 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
-			(at 124.46 62.23 0)
+		(property "Value" "GND"
+			(at 106.68 87.6299 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 102.87 87.63 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2855,8 +2888,17 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Resistor"
-			(at 124.46 62.23 0)
+		(property "Datasheet" ""
+			(at 102.87 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 102.87 87.63 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2865,15 +2907,146 @@
 			)
 		)
 		(pin "1"
-			(uuid "fdc54265-8184-42e3-b8a9-d07cb14b35d8")
+			(uuid "1e379e45-548a-43a3-836c-ac1e623044dd")
 		)
-		(pin "2"
-			(uuid "6e06c6b9-aaff-4355-93c9-26dae5d3ef34")
+		(instances
+			(project ""
+				(path "/7c5d3dcd-7852-47e5-b807-2699349c9bda"
+					(reference "#PWR01")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 181.61 76.2 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "8debed67-4d8e-4454-a7b5-77d0aeb0b588")
+		(property "Reference" "#PWR04"
+			(at 187.96 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 185.42 76.2001 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 181.61 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 181.61 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 181.61 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1c4be772-a15d-4aee-a789-6ddfabcc2e20")
 		)
 		(instances
 			(project "orione-v1"
 				(path "/7c5d3dcd-7852-47e5-b807-2699349c9bda"
-					(reference "R1")
+					(reference "#PWR04")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 74.93 83.82 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "91065225-fa72-4709-9285-973a9d67ba1d")
+		(property "Reference" "#PWR02"
+			(at 81.28 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 78.74 83.8199 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 74.93 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 74.93 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 74.93 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "2f686782-7b03-45e3-8a9a-c06ee9456157")
+		)
+		(instances
+			(project "orione-v1"
+				(path "/7c5d3dcd-7852-47e5-b807-2699349c9bda"
+					(reference "#PWR02")
 					(unit 1)
 				)
 			)
@@ -3069,7 +3242,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 124.46 73.66 90)
+		(at 170.18 76.2 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3078,7 +3251,7 @@
 		(fields_autoplaced yes)
 		(uuid "b69e664e-8077-4923-b826-d85ba97b8ced")
 		(property "Reference" "R2"
-			(at 124.46 67.31 90)
+			(at 170.18 82.55 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3086,7 +3259,7 @@
 			)
 		)
 		(property "Value" "R"
-			(at 124.46 69.85 90)
+			(at 170.18 80.01 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3094,7 +3267,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
-			(at 124.46 75.438 90)
+			(at 170.18 74.422 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3103,7 +3276,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 124.46 73.66 0)
+			(at 170.18 76.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3112,7 +3285,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 124.46 73.66 0)
+			(at 170.18 76.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3137,16 +3310,16 @@
 	)
 	(symbol
 		(lib_id "LED:LD274")
-		(at 118.11 73.66 0)
+		(at 175.26 90.17 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "beee1da2-b959-4e81-b716-1b42e7615931")
-		(property "Reference" "D90"
-			(at 116.967 66.04 0)
+		(uuid "ba7d96b8-bfda-42ac-a003-1637164842fe")
+		(property "Reference" "D89"
+			(at 176.403 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3154,7 +3327,7 @@
 			)
 		)
 		(property "Value" "LD274"
-			(at 116.967 68.58 0)
+			(at 176.403 95.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3162,7 +3335,7 @@
 			)
 		)
 		(property "Footprint" "LED_THT:LED_D5.0mm_IRGrey"
-			(at 118.11 69.215 0)
+			(at 175.26 94.615 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3171,7 +3344,7 @@
 			)
 		)
 		(property "Datasheet" "http://pdf.datasheetcatalog.com/datasheet/siemens/LD274.pdf"
-			(at 116.84 73.66 0)
+			(at 176.53 90.17 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3180,7 +3353,75 @@
 			)
 		)
 		(property "Description" "950nm IR-LED, 5mm"
-			(at 118.11 73.66 0)
+			(at 175.26 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "19ac2e7a-cf08-4112-9f03-3898073dfcb0")
+		)
+		(pin "2"
+			(uuid "aa537388-81c2-419c-a440-69da44cf5d91")
+		)
+		(instances
+			(project "orione-v1"
+				(path "/7c5d3dcd-7852-47e5-b807-2699349c9bda"
+					(reference "D89")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "LED:LD274")
+		(at 176.53 76.2 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "beee1da2-b959-4e81-b716-1b42e7615931")
+		(property "Reference" "D90"
+			(at 177.673 83.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "LD274"
+			(at 177.673 81.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "LED_THT:LED_D5.0mm_IRGrey"
+			(at 176.53 80.645 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "http://pdf.datasheetcatalog.com/datasheet/siemens/LD274.pdf"
+			(at 177.8 76.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "950nm IR-LED, 5mm"
+			(at 176.53 76.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3335,33 +3576,17 @@
 		)
 	)
 	(symbol
-		(lib_id "LED:LD274")
-		(at 118.11 62.23 0)
+		(lib_id "power:GND")
+		(at 156.21 85.09 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "cf63ae85-fd94-4c24-8e2c-fa0be56eac7c")
-		(property "Reference" "D89"
-			(at 116.967 54.61 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "LD274"
-			(at 116.967 57.15 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "LED_THT:LED_D5.0mm_IRGrey"
-			(at 118.11 57.785 0)
+		(uuid "c4416ab9-10f9-4d2a-98c7-4d2954884d39")
+		(property "Reference" "#PWR03"
+			(at 162.56 85.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3369,8 +3594,17 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "http://pdf.datasheetcatalog.com/datasheet/siemens/LD274.pdf"
-			(at 116.84 62.23 0)
+		(property "Value" "GND"
+			(at 160.02 85.0899 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 156.21 85.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3378,8 +3612,17 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "950nm IR-LED, 5mm"
-			(at 118.11 62.23 0)
+		(property "Datasheet" ""
+			(at 156.21 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 156.21 85.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3388,15 +3631,79 @@
 			)
 		)
 		(pin "1"
-			(uuid "0b75ae0f-4c51-4811-bf15-b380fe465467")
-		)
-		(pin "2"
-			(uuid "35e76687-12dd-4a49-a6f0-0ed2d50d7d3a")
+			(uuid "4ad22090-81ee-4b24-95dd-22095762e08f")
 		)
 		(instances
 			(project "orione-v1"
 				(path "/7c5d3dcd-7852-47e5-b807-2699349c9bda"
-					(reference "D89")
+					(reference "#PWR03")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 180.34 90.17 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "d2e56004-a6ef-4892-aa5e-96301158a6b6")
+		(property "Reference" "#PWR05"
+			(at 186.69 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 184.15 90.1701 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 180.34 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 180.34 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 180.34 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "e1d74439-7198-405c-b014-d408c4c0930f")
+		)
+		(instances
+			(project "orione-v1"
+				(path "/7c5d3dcd-7852-47e5-b807-2699349c9bda"
+					(reference "#PWR05")
 					(unit 1)
 				)
 			)
@@ -3461,6 +3768,74 @@
 			(project "orione-v1"
 				(path "/7c5d3dcd-7852-47e5-b807-2699349c9bda"
 					(reference "H7")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 168.91 90.17 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "fc03e88f-8806-4155-9498-6140134b971c")
+		(property "Reference" "R1"
+			(at 168.91 96.52 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "R"
+			(at 168.91 93.98 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal"
+			(at 168.91 88.392 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 168.91 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 168.91 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "8d546b1e-2a23-4fe3-b4ed-7fd21762fdfd")
+		)
+		(pin "2"
+			(uuid "a11f744c-b772-40ad-8198-c094895bb0e5")
+		)
+		(instances
+			(project "orione-v1"
+				(path "/7c5d3dcd-7852-47e5-b807-2699349c9bda"
+					(reference "R1")
 					(unit 1)
 				)
 			)
