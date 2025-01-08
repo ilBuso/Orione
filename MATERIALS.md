@@ -8,8 +8,10 @@
 - 90 Gateron Yellow
 - 100 1N4148 Diode
 - 10 5mm Red Led
-- 20 220ohm Resistor
-- 1 USB Connector [link](https://it.rs-online.com/web/p/accessori-per-strumenti-di-sviluppo/0429307)
+- 10 220Ω Resistor
+- 10 1kΩ Resistor
+- 10 2kΩ Resistor
+- 1 USB Connector [link](https://it.rs-online.com/web/p/accessori-per-strumenti-di-sviluppo/6877770)
 
 ## Final Product
 - Soldering Station
