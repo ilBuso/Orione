@@ -44,20 +44,20 @@ The plan is to first make sure that thr interrupts work by lighting up a led in 
 1. **Configure Rows as Outputs**:
    - For example, if `P1.0`, `P1.1`, and `P1.2` are row pins:
      ```c
-     P1DIR |= (BIT0 | BIT1 | BIT2);  // Set rows (P1.0, P1.1, P1.2) as outputs
+     P1->DIR |= (BIT0 | BIT1 | BIT2);  // Set rows (P1.0, P1.1, P1.2) as outputs
      ```
 
 2. **Configure Columns as Inputs**:
    - For example, if `P2.0`, `P2.1`, and `P2.2` are column pins:
      ```c
-     P2DIR &= ~(BIT0 | BIT1 | BIT2);  // Set columns (P2.0, P2.1, P2.2) as inputs
+     P2->DIR &= ~(BIT0 | BIT1 | BIT2);  // Set columns (P2.0, P2.1, P2.2) as inputs
      ```
 
 3. **Enable Pull-Up Resistors on Columns**:
    - Pull-ups ensure the column pins read high (`1`) when no switch is pressed:
      ```c
-     P2OUT |= (BIT0 | BIT1 | BIT2);  // Enable pull-up resistors
-     P2REN |= (BIT0 | BIT1 | BIT2);  // Activate resistors
+     P2->OUT |= (BIT0 | BIT1 | BIT2);  // Enable pull-up resistors
+     P2->REN |= (BIT0 | BIT1 | BIT2);  // Activate resistors
      ```
 
 4. **Scan the Matrix**:
@@ -67,11 +67,11 @@ The plan is to first make sure that thr interrupts work by lighting up a led in 
      // Example: Scanning a 3x3 matrix
      for (int row = 0; row < 3; row++) {
          // Drive the current row low
-         P1OUT &= ~(1 << row);  // Clear the bit for the active row
-         P1OUT |= (~(1 << row) & (BIT0 | BIT1 | BIT2));  // Set other rows high
+         P1->OUT &= ~(1 << row);  // Clear the bit for the active row
+         P1->OUT |= (~(1 << row) & (BIT0 | BIT1 | BIT2));  // Set other rows high
 
          // Read the columns
-         uint8_t col_state = P2IN & (BIT0 | BIT1 | BIT2);
+         uint8_t col_state = P2->IN & (BIT0 | BIT1 | BIT2);
 
          // Process the column states for the current row
          // ...
@@ -82,6 +82,68 @@ The plan is to first make sure that thr interrupts work by lighting up a led in 
 Since mechanical switches (like Cherry MX) can bounce (i.e., rapidly open and close during a press), you must add **debouncing** logic:
 - Either use a small delay (software debounce).
 - Or implement more robust algorithms to confirm stable state changes.
+
+## UART-USB
+### Pin Configuration
+1. **TXD (Transmit Data)**:
+    - This is the output from the MSP432 to transmit data to the UART-to-USB cable.
+    - You need to configure the pin connected to TXD as an output.
+    - You will use the alternate function mode for this pin to enable UART functionality.
+
+2. **RXD (Receive Data)**:
+    - This is the input to the MSP432 to receive data from the UART-to-USB cable.
+    - You need to configure the pin connected to RXD as an input.
+    - You will also use the alternate function mode for this pin to enable UART functionality.
+3. **RTS# (Request to Send)**:
+   - This is an output from the MSP432 to indicate that it is ready to receive data.
+   - Configure the pin connected to RTS# as an **output pin**.
+   - Set it high when the MSP432 is ready to receive data, and low otherwise.
+
+4. **CTS# (Clear to Send)**:
+   - This is an input to the MSP432 to indicate that the UART-to-USB cable is ready to receive data.
+   - Configure the pin connected to CTS# as an **input pin**.
+   - Enable a **pull-up resistor** on this pin if the signal might float when not driven (check the cable documentation to see if this is necessary).
+
+### Steps for Configuration in Code (Example for `RTS` and `CTS` on Port P2.4 and P2.5):
+1. **RTS Output Configuration**:
+   ```c
+   P2->DIR |= BIT4;  // Set P2.4 as output (RTS)
+   P2->OUT |= BIT4;  // Default RTS high (ready to receive data)
+   ```
+
+2. **CTS Input Configuration**:
+   ```c
+   P2->DIR &= ~BIT5;  // Set P2.5 as input (CTS)
+   P2->REN |= BIT5;   // Enable pull resistor for P2.5
+   P2->OUT |= BIT5;   // Select pull-up resistor
+   ```
+
+3. **Usage in Code**:
+   - To check the state of CTS#:
+     ```c
+     if (P2->IN & BIT5) {
+         // CTS is high: UART-to-USB cable is ready to receive data
+     } else {
+         // CTS is low: UART-to-USB cable is not ready
+     }
+     ```
+   - To control RTS#:
+     ```c
+     P2->OUT |= BIT4;  // Set RTS high to indicate ready to receive
+     P2->OUT &= ~BIT4; // Set RTS low to indicate not ready to receive
+     ```
+
+### Notes
+1. **Active Low Signals**:
+   - RTS# and CTS# are often active low. This means a low voltage level indicates readiness. Confirm the polarity of the signals from the UART-to-USB cable documentation.
+
+2. **Flow Control Requirements**:
+   - If hardware flow control is not used, you can leave RTS# and CTS# unconnected or configure them as GPIOs for other purposes.
+
+3. **Check the Documentation**:
+   - Refer to the MSP432P401R and UART-to-USB cable documentation for electrical specifications, such as voltage levels, to ensure compatibility.
+
+By configuring the pins appropriately, you can use hardware flow control effectively or disable it if unnecessary.
 
 ## Hardware
 - [ ] Buy Parts
