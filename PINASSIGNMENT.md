@@ -27,11 +27,9 @@ Column 16: P2.7
 
 # UART
 GND: GND  
-CTS: P6.0  
 VCC: +3.3V  
 TXD: P3.3  
 RXD: P3.2  
-RTS: P4.1  
 
 # LED
 POWER: P2.5  
