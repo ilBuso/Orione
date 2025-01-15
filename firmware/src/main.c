@@ -106,31 +106,6 @@ void init_ports() {
 	P3->DIR |= BIT3
 
 
-	/// RST
-	// Set pin 4.1 as GPIO pins
-	P4->SEL0 &= ~BIT1;
-	P4->SEL1 &= ~BIT1;
-	
-	// Set pin 4.1 as output pin
-	P4->DIR |= BIT1;
-
-	// Default RTS high (ready to receive data)
-	P4->OUT |= BIT1;
-
-
-	/// CTS
-	// Set pin 6.0 as GPIO pins
-	P6->SEL0 &= ~BIT0;
-	P6->SEL1 &= ~BIT0;
-
-	// Set pin 6.0 as input pin
-	P6->DIR &= ~BIT0;
-
-	// Enable pull-up resistor and activate resistors for pin 6.0
-	P6->OUT |= BIT0;
-	P6->REN |= BIT0;
-
-
 	// To prevent a floating input and to reduce power consumption, unused I/O pins
 	// should be configured as I/O function, output direction, and left unconnected
 	// on the PC board. The value of the PxOUT bit is don't care,because the pin is
