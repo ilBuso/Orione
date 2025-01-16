@@ -159,6 +159,43 @@ void main(void)
 
 	// main loop
 	while(1) {
-		
+		// Check each row
+		// Array of row and column bitmasks for easy access
+		const uint8_t rowBits[] = {BIT7, BIT6, BIT7, BIT0, BIT2, BIT6}; // Rows
+		const uint8_t colBits[] = {
+			BIT5, BIT4, BIT7, BIT5, BIT4, BIT2, BIT0, // Columns 0-6
+			BIT1, BIT5, BIT1, BIT3, BIT7, BIT6, BIT6, BIT4, BIT6, BIT7 // Columns 7-16
+		};
+
+		// Corresponding ports for rows and columns
+		GPIO_Type *rowPorts[] = {P5, P1, P1, P5, P5, P3};
+		GPIO_Type *colPorts[] = {
+			P5, P5, P4, P4, P4, P4, P4, // Columns 0-6
+			P6, P3, P5, P2, P6, P6, P5, P2, P2, P2 // Columns 7-16
+		};
+
+		// Matrix scanning loop
+		for (int row = 0; row < 6; row++) {
+			// Set the current row low
+			rowPorts[row]->OUT &= ~rowBits[row];
+
+			// Set all other rows high
+			for (int otherRow = 0; otherRow < 6; otherRow++) {
+				if (otherRow != row) {
+					rowPorts[otherRow]->OUT |= rowBits[otherRow];
+				}
+			}
+
+			// Read all columns
+			for (int col = 0; col < 17; col++) {
+				if ((colPorts[col]->IN & colBits[col]) == 0) {
+					// Button pressed at (row, col)
+					printf("Row %d - Column %d\n", row, col);
+				}
+			}
+
+			// Reset the current row high after scanning
+			rowPorts[row]->OUT |= rowBits[row];
+		}
 	}
 }
