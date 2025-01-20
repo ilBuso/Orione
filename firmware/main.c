@@ -14,8 +14,7 @@
 #include <stdbool.h>
 
 /// Variables
-uint8_t TXData = 1;
-uint8_t RXData = 0;
+uint8_t TXData = 65;
 
 const eUSCI_UART_ConfigV1 uartConfig = {
     EUSCI_A_UART_CLOCKSOURCE_SMCLK,                 // SMCLK Clock Source
@@ -23,7 +22,7 @@ const eUSCI_UART_ConfigV1 uartConfig = {
     0,                                              // UCxBRF = 0
     37,                                             // UCxBRS = 37
     EUSCI_A_UART_NO_PARITY,                         // No Parity
-    EUSCI_A_UART_MSB_FIRST,                         // MSB First
+    EUSCI_A_UART_LSB_FIRST,                         // LSB First
     EUSCI_A_UART_ONE_STOP_BIT,                      // One stop bit
     EUSCI_A_UART_MODE,                              // UART mode
     EUSCI_A_UART_OVERSAMPLING_BAUDRATE_GENERATION,  // Oversampling
@@ -118,8 +117,10 @@ void init_ports() {
  *  @return none
  */
 void uart_init() {
-    // Selecting P3.2 and P3.3 in UART mode and P1.0 as output (LED)
+    // Setting P3.2 and P3.3 to their primary function (UART)
     GPIO_setAsPeripheralModuleFunctionInputPin(GPIO_PORT_P3, GPIO_PIN2 | GPIO_PIN3, GPIO_PRIMARY_MODULE_FUNCTION);
+
+    // Settign P1.0 as output (LED)
     GPIO_setAsOutputPin(GPIO_PORT_P1, GPIO_PIN0);
     GPIO_setOutputLowOnPin(GPIO_PORT_P1, GPIO_PIN0);
 
@@ -134,11 +135,6 @@ void uart_init() {
 
     // Enable UART module
     UART_enableModule(EUSCI_A2_BASE);
-
-    // Enabling interrupts
-    UART_enableInterrupt(EUSCI_A2_BASE, EUSCI_A_UART_RECEIVE_INTERRUPT);
-    Interrupt_enableInterrupt(INT_EUSCIA2);
-    Interrupt_enableSleepOnIsrExit();
 }
 
 /**
@@ -199,17 +195,18 @@ void main(void) {
             int column = 0;
             for (; column < 17; column++) {
                 if ((*column_ports[column] & column_bits[column]) == 0) {
+                    GPIO_setOutputHighOnPin(GPIO_PORT_P1, GPIO_PIN0);
+                    
                     // Button pressed at (row, col)
                     printf("Button pressed at row %d, column %d\n", row, column);
+                    UART_transmitData(EUSCI_A2_BASE, TXData);
+
+                    GPIO_setOutputLowOnPin(GPIO_PORT_P1, GPIO_PIN0);
                 }
             }
 
             // Reset the current row HIGH after scanning
             *row_ports[row] |= row_bits[row];
         }
-
-        UART_transmitData(EUSCI_A2_BASE, TXData);
-        Interrupt_enableSleepOnIsrExit();
-        PCM_gotoLPM0InterruptSafe();
     }
 }
