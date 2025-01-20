@@ -14,8 +14,6 @@
 #include <stdbool.h>
 
 /// Variables
-uint8_t TXData = 65;
-
 const eUSCI_UART_ConfigV1 uartConfig = {
     EUSCI_A_UART_CLOCKSOURCE_SMCLK,                 // SMCLK Clock Source
     13,                                             // BRDIV = 13
@@ -29,6 +27,14 @@ const eUSCI_UART_ConfigV1 uartConfig = {
     EUSCI_A_UART_8_BIT_LEN                          // 8 bit data length
 };
 
+/// Enums
+
+/// Structs
+typedef struct {
+    uint8_t row;
+    uint8_t column;
+} KeyPair;
+
 /// Functions
 /**
  *  @brief Init Ports Function
@@ -36,10 +42,6 @@ const eUSCI_UART_ConfigV1 uartConfig = {
  *  @return none
  */
 void init_ports() {
-    /*
-     * Keyboard Matrix
-     */
-
     /// ROW
     // Set all the pins as GPIO pins
     P1->SEL0 &= ~(BIT6 | BIT7);
@@ -149,10 +151,6 @@ void init(void) {
     uart_init();
 }
 
-/// Enums
-
-/// Structs
-
 /**
  *  @brief Main function
  *  Initializes the MCU and then jumps to a main loop routine checking the
@@ -196,10 +194,13 @@ void main(void) {
             for (; column < 17; column++) {
                 if ((*column_ports[column] & column_bits[column]) == 0) {
                     GPIO_setOutputHighOnPin(GPIO_PORT_P1, GPIO_PIN0);
-                    
+
+
+
                     // Button pressed at (row, col)
                     printf("Button pressed at row %d, column %d\n", row, column);
-                    UART_transmitData(EUSCI_A2_BASE, TXData);
+                    UART_transmitData(EUSCI_A2_BASE, *pressed_button);
+                    UART_transmitData(EUSCI_A2_BASE, '\n');
 
                     GPIO_setOutputLowOnPin(GPIO_PORT_P1, GPIO_PIN0);
                 }
