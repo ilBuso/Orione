@@ -9,7 +9,6 @@
 #include <ti/devices/msp432p4xx/driverlib/driverlib.h>
 #include "msp.h"
 
-#include "stdio.h"
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -27,13 +26,23 @@ const eUSCI_UART_ConfigV1 uartConfig = {
     EUSCI_A_UART_8_BIT_LEN                          // 8 bit data length
 };
 
-/// Enums
+// Row and column bitmasks
+const uint8_t row_bits[] = {BIT7, BIT6, BIT7, BIT0, BIT2, BIT6};
+const uint8_t column_bits[] = {BIT5, BIT4, BIT7, BIT5, BIT4, BIT2, BIT0, BIT1, BIT5, BIT1, BIT3, BIT7, BIT6, BIT6, BIT4, BIT6, BIT7};
 
-/// Structs
-typedef struct {
-    uint8_t row;
-    uint8_t column;
-} KeyPair;
+// Row and column ports
+volatile uint8_t *row_ports[] = {&P5->OUT, &P1->OUT, &P1->OUT, &P5->OUT, &P5->OUT, &P3->OUT};
+const volatile uint8_t *column_ports[] = {&P5->IN, &P5->IN, &P4->IN, &P4->IN, &P4->IN, &P4->IN, &P4->IN, &P6->IN, &P3->IN, &P5->IN, &P2->IN, &P6->IN, &P6->IN, &P5->IN, &P2->IN, &P2->IN, &P2->IN};
+
+// Keymap
+const int8_t keys[6][17] = {
+    {1, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 87, 88, 99, 70, 119, -1},
+    {41, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, -1, -1, -1},
+    {15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 43, -1, -1, -1},
+    {58, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 28, -1, -1, -1, -1},
+    {42, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, -1, -1, 103, -1, -1},
+    {29, 125, 56, 57, -1, -1, -1, 100, 126, 97, -1, 105, 108, 106, -1, -1, -1}
+};
 
 /// Functions
 /**
@@ -41,69 +50,18 @@ typedef struct {
  *  This function initialize all the necessary GPIOs ports
  *  @return none
  */
-void init_ports() {
-    /// ROW
-    // Set all the pins as GPIO pins
-    P1->SEL0 &= ~(BIT6 | BIT7);
-    P1->SEL1 &= ~(BIT6 | BIT7);
+void GPIO_init() {
+    // ROW
+    GPIO_setAsOutputPin(GPIO_PORT_P1, GPIO_PIN6 | GPIO_PIN7);
+    GPIO_setAsOutputPin(GPIO_PORT_P3, GPIO_PIN6);
+    GPIO_setAsOutputPin(GPIO_PORT_P5, GPIO_PIN0 | GPIO_PIN2 | GPIO_PIN7);
 
-    P3->SEL0 &= ~(BIT6);
-    P3->SEL1 &= ~(BIT6);
-
-    P5->SEL0 &= ~(BIT0 | BIT2 | BIT7);
-    P5->SEL1 &= ~(BIT0 | BIT2 | BIT7);
-
-    // Set all the pins as output pins
-    P1->DIR |= (BIT6 | BIT7);
-
-    P3->DIR |= (BIT6);
-
-    P5->DIR |= (BIT0 | BIT2 | BIT7);
-
-
-    /// COLUMN
-    // Set all the pins as GPIO pins
-    P2->SEL0 &= ~(BIT3 | BIT4 | BIT6 | BIT7);
-    P2->SEL1 &= ~(BIT3 | BIT4 | BIT6 | BIT7);
-
-    P3->SEL0 &= ~BIT5;
-    P3->SEL1 &= ~BIT5;
-
-    P4->SEL0 &= ~(BIT0 | BIT2 | BIT4 | BIT5 | BIT7);
-    P4->SEL1 &= ~(BIT0 | BIT2 | BIT4 | BIT5 | BIT7);
-
-    P5->SEL0 &= ~(BIT1 | BIT4 | BIT5 | BIT6);
-    P5->SEL1 &= ~(BIT1 | BIT4 | BIT5 | BIT6);
-
-    P6->SEL0 &= ~(BIT1 | BIT6 | BIT7);
-    P6->SEL1 &= ~(BIT1 | BIT6 | BIT7);
-
-    // Set all the pins as input pins
-    P2->DIR &= ~(BIT3 | BIT4 | BIT6 | BIT7);
-
-    P3->DIR &= ~BIT5;
-
-    P4->DIR &= ~(BIT0 | BIT2 | BIT4 | BIT5 | BIT7);
-
-    P5->DIR &= ~(BIT1 | BIT4 | BIT5 | BIT6);
-
-    P6->DIR &= ~(BIT1 | BIT6 | BIT7);
-
-    // Enable pull-up resistor and activate resistors for all pins
-    P2->OUT |= (BIT3 | BIT4 | BIT6 | BIT7);
-    P2->REN |= (BIT3 | BIT4 | BIT6 | BIT7);
-
-    P3->OUT |= BIT5;
-    P3->REN |= BIT5;
-
-    P4->OUT |= (BIT0 | BIT2 | BIT4 | BIT5 | BIT7);
-    P4->REN |= (BIT0 | BIT2 | BIT4 | BIT5 | BIT7);
-
-    P5->OUT |= (BIT1 | BIT4 | BIT5 | BIT6);
-    P5->REN |= (BIT1 | BIT4 | BIT5 | BIT6);
-
-    P6->OUT |= (BIT1 | BIT6 | BIT7);
-    P6->REN |= (BIT1 | BIT6 | BIT7);
+    // COLUMN
+    GPIO_setAsInputPinWithPullUpResistor(GPIO_PORT_P2, GPIO_PIN3 | GPIO_PIN4 | GPIO_PIN6 | GPIO_PIN7);
+    GPIO_setAsInputPinWithPullUpResistor(GPIO_PORT_P3, GPIO_PIN5);
+    GPIO_setAsInputPinWithPullUpResistor(GPIO_PORT_P4, GPIO_PIN0 | GPIO_PIN2 | GPIO_PIN4 | GPIO_PIN5 | GPIO_PIN7);
+    GPIO_setAsInputPinWithPullUpResistor(GPIO_PORT_P5, GPIO_PIN1 | GPIO_PIN4 | GPIO_PIN5 | GPIO_PIN6);
+    GPIO_setAsInputPinWithPullUpResistor(GPIO_PORT_P6, GPIO_PIN1 | GPIO_PIN6 | GPIO_PIN7);
 
     // To prevent a floating input and to reduce power consumption, unused I/O pins
     // should be configured as I/O function, output direction, and left unconnected
@@ -118,7 +76,7 @@ void init_ports() {
  *  This function initializes the UART
  *  @return none
  */
-void uart_init() {
+void UART_init() {
     // Setting P3.2 and P3.3 to their primary function (UART)
     GPIO_setAsPeripheralModuleFunctionInputPin(GPIO_PORT_P3, GPIO_PIN2 | GPIO_PIN3, GPIO_PRIMARY_MODULE_FUNCTION);
 
@@ -146,9 +104,9 @@ void uart_init() {
  */
 void init(void) {
     // Initialize the ports
-    init_ports();
+    GPIO_init();
     // Initialize the USB APIs
-    uart_init();
+    UART_init();
 }
 
 /**
@@ -164,16 +122,6 @@ void main(void) {
     // Call init functions
     init();
 
-    // Row and column bitmasks
-    const uint8_t row_bits[] = {BIT7, BIT6, BIT7, BIT0, BIT2, BIT6};
-    const uint8_t column_bits[] = {BIT5, BIT4, BIT7, BIT5, BIT4, BIT2, BIT0, BIT1, BIT5, BIT1, BIT3, BIT7, BIT6, BIT6, BIT4, BIT6, BIT7};
-
-    // Row ports
-    volatile uint8_t *row_ports[] = {&P5->OUT, &P1->OUT, &P1->OUT, &P5->OUT, &P5->OUT, &P3->OUT};
-
-    // Column ports
-    const volatile uint8_t *column_ports[] = {&P5->IN, &P5->IN, &P4->IN, &P4->IN, &P4->IN, &P4->IN, &P4->IN, &P6->IN, &P3->IN, &P5->IN, &P2->IN, &P6->IN, &P6->IN, &P5->IN, &P2->IN, &P2->IN, &P2->IN};
-
     // Main loop
     while (1) {
         int row = 0;
@@ -181,7 +129,7 @@ void main(void) {
             // Set the current row LOW
             *row_ports[row] &= ~row_bits[row];
 
-            // Set all other rows HIGHù
+            // Set all other rows HIGH
             int other_rows = 0;
             for (; other_rows < 6; other_rows++) {
                 if (other_rows != row) {
@@ -195,12 +143,8 @@ void main(void) {
                 if ((*column_ports[column] & column_bits[column]) == 0) {
                     GPIO_setOutputHighOnPin(GPIO_PORT_P1, GPIO_PIN0);
 
-
-
-                    // Button pressed at (row, col)
-                    printf("Button pressed at row %d, column %d\n", row, column);
-                    UART_transmitData(EUSCI_A2_BASE, *pressed_button);
-                    UART_transmitData(EUSCI_A2_BASE, '\n');
+                    uint8_t pressed_button = keys[row][column];
+                    UART_transmitData(EUSCI_A2_BASE, pressed_button);
 
                     GPIO_setOutputLowOnPin(GPIO_PORT_P1, GPIO_PIN0);
                 }
