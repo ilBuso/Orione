@@ -21,6 +21,9 @@
     - [[link](https://it.rs-online.com/web/p/regolatori-di-tensione/6869767)] [[data-sheet](/datasheets/LD1117.pdf)]
 - **1** USB Connector
     - [[link](https://it.rs-online.com/web/p/accessori-per-strumenti-di-sviluppo/0429307)] [[data-sheet](./datasheets/TTL-232R-3V3.pdf)]
+- **1** OLED Display
+    - [[link](https://it.rs-online.com/web/p/display-oled/2543581)] [[data-sheet]()]
+- Rotary Encoder
 
 ## Final Product
 - Soldering Station
