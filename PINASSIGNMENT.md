@@ -39,7 +39,7 @@ SDA: P6.4
 
 # Rotary Encoder
 Channel A: P4.1  
-Channel B: P4.3
+Channel B: P4.3  
 Common: GND  
 SW_1_PIN: P1.5     
 SW_2_PIN: P4.6  
