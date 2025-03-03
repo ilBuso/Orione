@@ -31,6 +31,19 @@ VCC: +3.3V
 TXD: P3.3  
 RXD: P3.2  
 
+# OLED-Display
+GND: GND  
+VIN: +3.3V  
+SCL: P6.5  
+SDA: P6.4  
+
+# Rotary Encoder
+Channel A: P4.1  
+Channel B: P4.3
+Common: GND  
+SW_1_PIN: P1.5     
+SW_2_PIN: P4.6  
+
 # LED
 POWER: P2.5  
 CAPS-LOCK: P3.0  
