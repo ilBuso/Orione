@@ -24,7 +24,7 @@
 - **1** OLED Display
     - [[link](https://it.rs-online.com/web/p/display-oled/2543581)] [[data-sheet](./datasheets/oled-display.pdf)] [[controller data-sheet](./datasheets/oled-display-controller.pdf)]
 - Rotary Encoder
-    - [[link](https://it.rs-online.com/web/p/encoder-meccanici-rotativi/1675384)] [[data-sheet](./datasheets/rotary-encoder.pdf)]
+    - [[link](https://it.rs-online.com/web/p/encoder-meccanici-rotativi/7377767)] [[data-sheet](./datasheets/rotary-encoder.pdf)]
 
 ## Final Product
 - Soldering Station
