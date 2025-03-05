@@ -5,7 +5,7 @@
 - **Caps-Lock**: Understand and implement the `Caps-Lock` key
 - **Multiple Layers**: Understand how to handle and implement all the layer keys (ex. `Shift`, `Ctrl`, `Alt`, `AltGr` ...)
 - **Multimedia Keys**: Understand and implement the Multimedia keys (Stop/Play Audio, Increase/Decrease Brightness ...)
-- **USB HID Emulator**: Due to the nature of the USB-to-UART cable, we need an **emulator** that converts the data coming from the computer’s **serial port** into **key-binds**, making it usable as keyboard input. To achieve this, we need to write a USB-to-HID emulator (HID = Human Interface Device). I have already drafted an initial version in `vk.c`. While it currently functions, it requires further improvements to enhance efficiency. For example, replacing obsolete functions such as `open()` with `fopen()`.
+- **USB HID Emulator**: Due to the nature of the USB-to-UART cable, we need an **emulator** that converts the data coming from the computer's **serial port** into **key-binds**, making it usable as keyboard input. To achieve this, we need to write a USB-to-HID emulator (HID = Human Interface Device). I have already drafted an initial version in `vk.c`. While it currently functions, it requires further improvements to enhance efficiency. For example, replacing obsolete functions such as `open()` with `fopen()`.
 - **OLED-Display**:
    - Uses I2C so we will need to setup the communication
    - Decide what to show on it (ex. ButtonPressedPerMinute, Volume ...)
