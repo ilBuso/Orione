@@ -16,7 +16,7 @@ void main(void) {
     // Main loop
     while (1) {
         // Can put CPU into low power mode here if desired
-        // PCM_gotoLPM0();
+        PCM_gotoLPM0();
     }
 }
 
