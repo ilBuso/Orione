@@ -23,7 +23,7 @@
     - [[link](https://it.rs-online.com/web/p/accessori-per-strumenti-di-sviluppo/0429307)] [[data-sheet](./datasheets/TTL-232R-3V3.pdf)]
 - **1** OLED Display
     - [[link](https://it.rs-online.com/web/p/display-oled/2543581)] [[data-sheet](./datasheets/oled-display.pdf)] [[controller data-sheet](./datasheets/oled-display-controller.pdf)]
-- Rotary Encoder
+- **1** Rotary Encoder
     - [[link](https://it.rs-online.com/web/p/encoder-meccanici-rotativi/7377767)] [[data-sheet](./datasheets/rotary-encoder.pdf)]
 
 ## Final Product
