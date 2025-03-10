@@ -70,8 +70,6 @@ For this particular setup, we use a **6-row by 17-column matrix**, allowing us t
 3. If a key in the active column is pressed, the row pin connected to that key will detect the signal.
 4. The MCU cycles through all columns sequentially to detect all pressed keys.
 
->We have to see if this is the best way or maybe it is best to work with interrupts
-
 By scanning the matrix in this way, the MSP432 can efficiently detect multiple key presses while using fewer pins.
 
 A trade off of using a key matrix is that we can encounter ghosting, to prevent it we use diodes to connect the various switches of the columns forcing the electricity to flow in on ly one direction.
