@@ -1,3 +1,13 @@
+/**
+ * @file global.c
+ * @brief Implementation of global variables and helper functions
+ * @author Alessandro Busola
+ * @date   March 2024
+ * 
+ * This file implements the global arrays and helper functions declared in
+ * global.h for keyboard matrix scanning functionality.
+ */
+
 #include "global.h"
 
 // Mapping arrays for rows
