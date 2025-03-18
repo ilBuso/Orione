@@ -147,5 +147,5 @@ void scan_rows(uint_fast16_t port, uint_fast16_t pin) {
     }
 
     // To enable interrupts for a specific pin
-    GPIO_clearInterruptFlag(port, pin);
+    GPIO_enableInterrupt(port, pin);
 }
