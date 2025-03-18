@@ -88,3 +88,6 @@ Release/
 *.ilk
 *.idb
 *.rsuser
+
+# ignore
+**/emulator
