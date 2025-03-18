@@ -107,6 +107,9 @@ void scan_rows(uint_fast16_t port, uint_fast16_t pin) {
     int8_t column = get_column_index(port, pin);
     if (column < 0) return;
 
+    // Disable interrupts for pins 1 and 2 on Port 1
+    GPIO_disableInterrupt(port, pin);
+
     // Set all rows low
     int i;
     for (i = 0; i < NUM_ROWS; i++) {
@@ -142,4 +145,7 @@ void scan_rows(uint_fast16_t port, uint_fast16_t pin) {
     for (i = 0; i < NUM_ROWS; i++) {
         GPIO_setOutputHighOnPin(row_port[i], row_pins[i]);
     }
+
+    // To enable interrupts for a specific pin
+    GPIO_clearInterruptFlag(port, pin);
 }
