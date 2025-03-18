@@ -28,6 +28,13 @@ void GPIO_init(void) {
     GPIO_setAsInputPinWithPullDownResistor(GPIO_PORT_P4, GPIO_PIN0 | GPIO_PIN2 | GPIO_PIN4 | GPIO_PIN5 | GPIO_PIN7);
     GPIO_setAsInputPinWithPullDownResistor(GPIO_PORT_P5, GPIO_PIN1 | GPIO_PIN4 | GPIO_PIN5 | GPIO_PIN6);
     GPIO_setAsInputPinWithPullDownResistor(GPIO_PORT_P6, GPIO_PIN1 | GPIO_PIN6 | GPIO_PIN7);
+    
+    // To prevent a floating input and to reduce power consumption, unused I/O pins
+	// should be configured as I/O function, output direction, and left unconnected
+	// on the PC board. The value of the PxOUT bit is don't care,because the pin is
+	// unconnected. Alternatively, the integrated pullup or pulldown resistor can
+	// be enabled by setting the PxREN bit of the unused pin to prevent a floating 
+	// input.
 }
 
 void UART_init(void) {

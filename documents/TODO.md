@@ -11,6 +11,9 @@
    - Decide what to show on it (ex. ButtonPressedPerMinute, Volume ...)
 - **Rotary Encoder**: Understand and implement the volume knob
 
+## Bugs
+- **Interrupt**: continuously sending interrupt to to `scan_row()` not disabling the interrupts so every it loops to find the row that originated the interrupt it sends another one. WE MUST CHECK THAT DISABILITATE THE INTERRUPT DOES NOT INTERFERE WIT THE CLICK OF OTHER KEYS.
+
 ## Nice to Add
 - **Macros**: Useful macros (keep in mind that it is not a commercial keyboard just for a selected user)
 - **Dynamic Key-Mapping**: Feature that let user import it's own Key-Map (keep in mind that it is not a commercial keyboard just for a selected user)
