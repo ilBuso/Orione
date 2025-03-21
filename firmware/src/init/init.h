@@ -47,6 +47,8 @@
     */
     void UART_init(void);
 
+    void rotary_encoder_init(void);
+
     /**
     * @brief Main initialization function
     * 
