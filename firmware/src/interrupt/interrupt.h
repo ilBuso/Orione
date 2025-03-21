@@ -8,7 +8,6 @@
  * the keyboard matrix, as well as the function to initialize interrupts.
  */
 
-
 #ifndef INTERRUPT_H
 #define INTERRUPT_H
 
@@ -24,6 +23,7 @@
     #include "../global/global.h"
 
     // Port interrupt handlers
+    void PORT1_IRQHandler(void);
     void PORT2_IRQHandler(void);
     void PORT3_IRQHandler(void);
     void PORT4_IRQHandler(void);

@@ -38,6 +38,9 @@
     /** @brief Number of pins paired with Port 6 in the keyboard matrix */
     #define PORT_6_NUM_PINS 3
 
+    /** @brief Volume variable */
+    volatile uint8_t volume;
+
     /** @brief Array of GPIO ports for each keyboard row*/
     extern const uint_fast16_t row_port[NUM_ROWS];
     /** @brief Array of GPIO pins for each keyboard row */

@@ -100,6 +100,24 @@ void interrupt_init(void) {
     Interrupt_enableInterrupt(INT_PORT6);
 }
 
+void rotary_encoder_init(void) {
+    // Configure ChannelA and ChannelB as input with pull-up resistor
+    GPIO_setAsInputPinWithPullUpResistor(GPIO_PORT_P4, GPIO_PIN1 | GPIO_PIN3);
+
+    // Enable Interrupt on ChannelA
+    GPIO_interruptEdgeSelect(GPIO_PORT_P4, GPIO_PIN3, GPIO_BOTH_EDGES);
+    GPIO_clearInterruptFlag(GPIO_PORT_P4, GPIO_PIN3);
+    GPIO_enableInterrupt(GPIO_PORT_P4, GPIO_PIN3);
+
+    // Configure one end on SW1
+    GPIO_setAsInputPinWithPullUpResistor(GPIO_PORT_P1, GPIO_PIN5);
+
+    // Enable Interrupt on SW1
+    GPIO_interruptEdgeSelect(GPIO_PORT_P1, GPIO_PIN5, GPIO_HIGH_TO_LOW_TRANSITION);
+    GPIO_clearInterruptFlag(GPIO_PORT_P1, GPIO_PIN5);
+    GPIO_enableInterrupt(GPIO_PORT_P1, GPIO_PIN5);
+}
+
 void init(void) {
     // Initialize GPIO
     GPIO_init();
@@ -107,4 +125,6 @@ void init(void) {
     interrupt_init();
     // Initialize UART
     UART_init();
+
+    rotary_encoder_init();
 }
