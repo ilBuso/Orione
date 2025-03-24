@@ -22,6 +22,7 @@
 
     // Header files
     #include "../global/global.h"
+    #include "../matrix/matrix.h"
 
     // Port interrupt handlers
     void PORT2_IRQHandler(void);
