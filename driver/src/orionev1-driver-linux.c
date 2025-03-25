@@ -5,8 +5,6 @@
 #include <unistd.h>
 #include <termios.h>
 
-static int caps_lock_state = 0; // 0 = off, 1 = on
-
 int main() {
     const char *serialPort = "/dev/ttyUSB0"; // Update to match your device node
     int baudRate = B115200;
@@ -51,7 +49,7 @@ int main() {
     struct uinput_user_dev uidev = {};
     snprintf(uidev.name, UINPUT_MAX_NAME_SIZE, "MSP432 Virtual Keyboard");
     uidev.id.bustype = BUS_USB;
-    uidev.id.vendor = 0x1234;  // Vendor ID
+    uidev.id.vendor = 0x1234; // Vendor ID
     uidev.id.product = 0x5678; // Product ID
     uidev.id.version = 1;
 
@@ -61,10 +59,6 @@ int main() {
     }
     ioctl(uinputFd, UI_SET_EVBIT, EV_KEY);
     ioctl(uinputFd, UI_SET_EVBIT, EV_SYN);
-
-    //LED support
-    ioctl(uinputFd, UI_SET_EVBIT, EV_LED);
-    ioctl(uinputFd, UI_SET_LEDBIT, LED_CAPSL);
 
     // Write the device configuration
     if (write(uinputFd, &uidev, sizeof(uidev)) < 0) {
@@ -93,53 +87,22 @@ int main() {
             if (keycode > 0) {
                 // Simulate key press
                 struct input_event ev = {};
+                ev.type = EV_KEY;
+                ev.code = keycode;
+                ev.value = 1; // Key press
+                write(uinputFd, &ev, sizeof(ev));
 
-                // Caps Lock case
-                if (keycode == 58) {
-                    // Send key pressed event
-                    ev.type = EV_KEY;
-                    ev.code = keycode;
-                    ev.value = 1; // key press
-                    write(uinputFd, &ev, sizeof(ev));
+                // Simulate key release
+                ev.value = 0; // Key release
+                write(uinputFd, &ev, sizeof(ev));
 
-                    // Send key released event
-                    ev.value = 0; // Key released
-                    write(uinputFd, &ev, sizeof(ev));
+                // Synchronize
+                ev.type = EV_SYN;
+                ev.code = SYN_REPORT;
+                ev.value = 0;
+                write(uinputFd, &ev, sizeof(ev));
 
-                    // Change the Caps Lock LED state
-                    ev.type = EV_LED;
-                    ev.code = LED_CAPSL;
-                    caps_lock_state = !caps_lock_state; // alternate the state
-                    ev.value = caps_lock_state;
-                    write(uinputFd, &ev, sizeof(ev));
-
-                    // Synchronize
-                    ev.type = EV_SYN;
-                    ev.code = SYN_REPORT;
-                    ev.value = 0;
-                    write(uinputFd, &ev, sizeof(ev));
-
-                    printf("Caps Lock %s\n", caps_lock_state ? "ON" : "OFF");
-                } else {
-                    // Normal key management
-                    // Simulate key press
-                    ev.type = EV_KEY;
-                    ev.code = keycode;
-                    ev.value = 1; // Key press
-                    write(uinputFd, &ev, sizeof(ev));
-
-                    // Simulate key release
-                    ev.value = 0; // Key release
-                    write(uinputFd, &ev, sizeof(ev));
-
-                    // Synchronize
-                    ev.type = EV_SYN;
-                    ev.code = SYN_REPORT;
-                    ev.value = 0;
-                    write(uinputFd, &ev, sizeof(ev));
-
-                    printf("Key pressed: %c (keycode: %d)\n", keycode, keycode);
-                } 
+                printf("Key pressed: %c (keycode: %d)\n", keycode, keycode);
             } else {
                 printf("Unknown keycode received: %d\n", keycode);
             }

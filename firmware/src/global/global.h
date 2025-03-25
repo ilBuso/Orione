@@ -26,6 +26,8 @@
     #define NUM_ROWS 6
     /** @brief Number of columns in the keyboard matrix */
     #define NUM_COLS 17
+    /** @brief Debounce time threshold in milliseconds */
+    #define DEBOUNCE_THRESHOLD_MS 20
 
     /** @brief Number of pins paired with Port 2 in the keyboard matrix */
     #define PORT_2_NUM_PINS 4
@@ -82,6 +84,22 @@
     * A value of -1 indicates no key at that position.
     */
     extern const int8_t keys[NUM_ROWS][NUM_COLS];
+
+    /**
+     * @brief Last press timestamps for each key
+     * 
+     * 2D array that stores the timestamp of the last press for each key.
+     * The first index is the row, the second index is the column
+     * A value of 0 indicates the key has not been pressed yet
+     */
+    extern uint32_t key_timestamps[NUM_ROWS][NUM_COLS];
+
+    /**
+     * @brief Get the current timestamp in milliseconds
+     * 
+     * @return uint32_t Current system time in milliseconds
+    */
+    uint32_t get_current_timestamp_ms(void);
 
     /**
     * @brief Translates a GPIO port and pin to a column index

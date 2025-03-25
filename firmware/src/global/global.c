@@ -9,6 +9,7 @@
  */
 
 #include "global.h"
+#include <time.h>
 
 // Mapping arrays for rows
 const uint_fast16_t row_port[NUM_ROWS] = {
@@ -62,6 +63,9 @@ const int8_t keys[NUM_ROWS][NUM_COLS] = {
     {29, 125, 56, 57, -1, -1, -1, 100, 126, 97, -1, 105, 108, 106, -1, -1, -1}
 };
 
+//Initialise the timestamps array for key debouncing
+uint32_t key_timestamps[NUM_ROWS][NUM_COLS] = {0};
+
 // Helper function to find column index
 int8_t get_column_index(uint_fast16_t port, uint_fast16_t pin) {
     const uint8_t (*column_array)[2];
@@ -102,6 +106,10 @@ int8_t get_column_index(uint_fast16_t port, uint_fast16_t pin) {
     return -1;
 }
 
+uint32_t get_current_timestamp_ms(void){
+    return (uint32_t)(clock() * 1000 / CLOCKS_PER_SEC);
+}
+
 void scan_rows(uint_fast16_t port, uint_fast16_t pin) {
     // Get column index for the triggered pin
     int8_t column = get_column_index(port, pin);
@@ -129,11 +137,22 @@ void scan_rows(uint_fast16_t port, uint_fast16_t pin) {
         if(GPIO_getInputPinValue(port, pin) == GPIO_INPUT_PIN_HIGH) {
             int8_t key_code = keys[row][column];
 
-            // Toggle LED for visual feedback
-            GPIO_toggleOutputOnPin(GPIO_PORT_P1, GPIO_PIN0);
-            // Send key code
-            UART_transmitData(EUSCI_A2_BASE, key_code);
+            if(key_code >= 0){ //Valid KeyCode
+                //Get current timestamp
+                uint32_t current_time = get_current_timestamp_ms();
+                uint32_t last_press_time = key_timestamps{row}{column};
 
+                if(last_press_time == 0 || (current_time - last_press_time) > DEBOUNCE_THRESHOLD_MS){
+                    //Update timestamps
+                    key_timestamps[row][column] = current_time;
+
+                    // Toggle LED for visual feedback
+                    GPIO_toggleOutputOnPin(GPIO_PORT_P1, GPIO_PIN0);
+
+                     // Send key code
+                    UART_transmitData(EUSCI_A2_BASE, key_code);
+                }
+            }
             break;
         }
 
