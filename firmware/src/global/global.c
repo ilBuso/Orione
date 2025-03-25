@@ -130,6 +130,8 @@ void scan_rows(uint_fast16_t port, uint_fast16_t pin) {
             GPIO_toggleOutputOnPin(GPIO_PORT_P1, GPIO_PIN0);
             // Send key code
             UART_transmitData(EUSCI_A2_BASE, key_code);
+
+            break;
         }
 
         // Set row back to low

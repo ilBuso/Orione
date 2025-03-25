@@ -20,11 +20,14 @@ void PORT2_IRQHandler(void) {
     for (i = 0; i < PORT_2_NUM_PINS; i++) {
         // Check if is the origin of the interrupt
         if(status & port_2_columns[i][0]) {
-            // Find triggering row
-            scan_rows(GPIO_PORT_P2, port_2_columns[i][0]);
-            break;
+            if(GPIO_getInputPinValue(GPIO_PORT_P2, port_2_columns[i][0]) == 1) {
+                // Find triggering row
+                scan_rows(GPIO_PORT_P2, port_2_columns[i][0]);
+            }
         }
     }
+
+    GPIO_clearInterruptFlag(GPIO_PORT_P2, status);
 }
 
 void PORT3_IRQHandler(void) {
@@ -36,11 +39,14 @@ void PORT3_IRQHandler(void) {
     for (i = 0; i < PORT_3_NUM_PINS; i++) {
         // Check if is the origin of the interrupt
         if(status & port_3_columns[i][0]) {
-            // Find triggering row
-            scan_rows(GPIO_PORT_P3, port_3_columns[i][0]);
-            break;
+            if(GPIO_getInputPinValue(GPIO_PORT_P3, port_3_columns[i][0]) == 1) {
+                // Find triggering row
+                scan_rows(GPIO_PORT_P3, port_3_columns[i][0]);
+            }
         }
     }
+
+    GPIO_clearInterruptFlag(GPIO_PORT_P3, status);
 }
 
 void PORT4_IRQHandler(void) {
@@ -52,11 +58,14 @@ void PORT4_IRQHandler(void) {
     for (i = 0; i < PORT_4_NUM_PINS; i++) {
         // Check if is the origin of the interrupt
         if(status & port_4_columns[i][0]) {
-            // Find triggering row
-            scan_rows(GPIO_PORT_P4, port_4_columns[i][0]);
-            break;
+            if(GPIO_getInputPinValue(GPIO_PORT_P4, port_4_columns[i][0]) == 1) {
+                // Find triggering row
+                scan_rows(GPIO_PORT_P4, port_4_columns[i][0]);
+            }
         }
     }
+
+    GPIO_clearInterruptFlag(GPIO_PORT_P4, status);
 }
 
 void PORT5_IRQHandler(void) {
@@ -68,11 +77,14 @@ void PORT5_IRQHandler(void) {
     for (i = 0; i < PORT_5_NUM_PINS; i++) {
         // Check if is the origin of the interrupt
         if(status & port_5_columns[i][0]) {
-            // Find triggering row
-            scan_rows(GPIO_PORT_P5, port_5_columns[i][0]);
-            break;
+            if(GPIO_getInputPinValue(GPIO_PORT_P5, port_5_columns[i][0]) == 1) {
+                // Find triggering row
+                scan_rows(GPIO_PORT_P5, port_5_columns[i][0]);
+            }
         }
     }
+
+    GPIO_clearInterruptFlag(GPIO_PORT_P5, status);
 }
 
 void PORT6_IRQHandler(void) {
@@ -84,9 +96,12 @@ void PORT6_IRQHandler(void) {
     for (i = 0; i < PORT_6_NUM_PINS; i++) {
         // Check if is the origin of the interrupt
         if(status & port_6_columns[i][0]) {
-            // Find triggering row
-            scan_rows(GPIO_PORT_P6, port_6_columns[i][0]);
-            break;
+            if(GPIO_getInputPinValue(GPIO_PORT_P6, port_6_columns[i][0]) == 1) {
+                // Find triggering row
+                scan_rows(GPIO_PORT_P6, port_6_columns[i][0]);
+            }
         }
     }
+
+    GPIO_clearInterruptFlag(GPIO_PORT_P7, status);
 }
