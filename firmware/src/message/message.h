@@ -11,9 +11,10 @@
     } RGB;
 
     typedef enum {
-        INFO,
         X,
-        Y
+        Y,
+        INFO,
+        END
     } MsgType;
 
     typedef struct {
