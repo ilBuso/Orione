@@ -1,3 +1,4 @@
+#include "message/message.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
@@ -78,35 +79,8 @@ int main() {
 
     // Main loop: Read from UART and send key events
     while (1) {
-        unsigned char buffer[1];
-        ssize_t bytesRead = read(serialFd, buffer, sizeof(buffer));
-
-        if (bytesRead > 0) {
-            int keycode = buffer[0];
-
-            if (keycode > 0) {
-                // Simulate key press
-                struct input_event ev = {};
-                ev.type = EV_KEY;
-                ev.code = keycode;
-                ev.value = 1; // Key press
-                write(uinputFd, &ev, sizeof(ev));
-
-                // Simulate key release
-                ev.value = 0; // Key release
-                write(uinputFd, &ev, sizeof(ev));
-
-                // Synchronize
-                ev.type = EV_SYN;
-                ev.code = SYN_REPORT;
-                ev.value = 0;
-                write(uinputFd, &ev, sizeof(ev));
-
-                printf("Key pressed: %c (keycode: %d)\n", keycode, keycode);
-            } else {
-                printf("Unknown keycode received: %d\n", keycode);
-            }
-        }
+        Message msg = receive_message_linux(serialFd);
+        emulate_key(msg, uinputFd);
     }
 
     // Cleanup

@@ -11,22 +11,27 @@
         Y_MSG_TYPE,
         Y_DATA,
         INFO_MSG_TYPE,
-        INFO_DATA,
+        INFO_DATA
     } Communication;
     
     typedef enum {
-        INFO,
         X,
-        Y
+        Y,
+        INFO,
+        END
     } MsgType;
 
     typedef struct {
-        MsgType msg_type;
-        uint8_t data;
+        uint8_t x;
+        uint8_t y;
+        uint8_t info;
     } Message;
 
-    Message receive_message();
-    void assemble_message();
-    bool check_order();
+    Message receive_message_linux(int serial_fd);
+    Message receive_message_macos();
+    Message receive_message_win64();
+    void emulate_key_linux(Message msg, int uinput_fd);
+    void emulate_key_macos();
+    void emulate_key_win64();
 
 #endif // MESSAGES_H
