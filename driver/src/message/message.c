@@ -1,118 +1,121 @@
 #include "message.h"
-#include "../matrix/linux.h"
-#include "../global/global.h"
 
 #include <stdio.h>
 #include <unistd.h>
 #include <linux/uinput.h>
+#include <stdlib.h>
 
 volatile uint8_t comm_step = INIT;
 
-Message receive_message_linux(int serial_fd) {
-    Message msg;
-    for (int index = 0; comm_step != END; index++) {
-        unsigned char buffer[1];
-        ssize_t bytes_read = read(serial_fd, buffer, sizeof(buffer));
+uint8_t receive_packet(int serial_fd) {
+    unsigned char buffer[1];
+    ssize_t bytes_read = read(serial_fd, buffer, sizeof(buffer));
+    if (bytes_read > 0) {
+        comm_step++;
+        return (uint8_t)buffer[0];
+    } else {
+        return 255;
+    }
+}
 
-        if (bytes_read > 0) {
-            if (index % 2 != 0) {
-                // message type
-                uint8_t msg_type = buffer[0];
-                switch (msg_type) {
-                    case INFO:
-                        // check previous step
-                        if (comm_step != Y_DATA) {
-                            // error
-                        }
-                        comm_step = INFO_MSG_TYPE;
-                        break;
-                    case X:
-                        // check previous step
-                        if (comm_step != INIT) {
-                            // error
-                        }
-                        comm_step = X_MSG_TYPE;
-                        break;
-                    case Y:
-                        // check previous step
-                        if (comm_step != X_DATA) {
-                            // error
-                        }
-                        comm_step = Y_MSG_TYPE;
-                        break;
-                    case END:
-                        return msg;
-                        break;
-                    default:
-                        // error
-                        break;
+Fragment* receive_fragment(int serial_fd) {
+    Fragment* fragment = (Fragment*)malloc(sizeof(Fragment));
+    if (fragment == NULL) {
+        return NULL;
+    }
+    
+    bool received_fragment_type = false;
+    bool received_fragment_data = false;
+    
+    for (int i = 0; !received_fragment_type || !received_fragment_data; i++) {
+        // Don't know if it is enough or what but is a good way to not do busy waiting inside a function
+        if (i >= 500) {
+            return NULL;
+        }
+
+        uint8_t packet = receive_packet(serial_fd);
+        if (packet != 255) {
+            if (comm_step % 2 != 0) {
+                if (!received_fragment_type) {
+                    fragment->fragment_type = (FrgType)packet;
+                    received_fragment_type = true;
+                } else {
+                    free(fragment);
+                    return NULL;
                 }
             } else {
-                // data
-                switch (comm_step) {
-                    case INFO_MSG_TYPE:
-                        comm_step = INFO_DATA;
-                        msg.info = buffer[0];
-                        break;
-                    case X_MSG_TYPE:
-                        comm_step = X_DATA;
-                        msg.x = buffer[0];
-                        break;
-                    case Y_MSG_TYPE:
-                        comm_step = X_DATA;
-                        msg.y = buffer[0];
-                        break;
-                    default:
-                        // error
-                        break;
+                if (!received_fragment_data) {
+                    fragment->data = packet;
+                    received_fragment_data = true;
+                } else {
+                    free(fragment);
+                    return NULL;
                 }
             }
-        }
-    }
-}
-
-Message receive_message_macos() {
-
-}
-
-Message receive_message_win64() {
-
-}
-
-void emulate_key_linux(Message msg, int uinput_fd) {
-    // to review based on how the coordinates are sent
-    if (msg.x <= NUM_COLS && msg.y <= NUM_ROWS) {
-        int8_t keycode = key[msg.x][msg.y];
-
-        if (keycode > 0) {
-            // Simulate key press
-            struct input_event ev = {};
-            ev.type = EV_KEY;
-            ev.code = keycode;
-            ev.value = 1; // Key press
-            write(uinput_fd, &ev, sizeof(ev));
-
-            // Simulate key release
-            ev.value = 0; // Key release
-            write(uinput_fd, &ev, sizeof(ev));
-
-            // Synchronize
-            ev.type = EV_SYN;
-            ev.code = SYN_REPORT;
-            ev.value = 0;
-            write(uinput_fd, &ev, sizeof(ev));
-
-            printf("Key pressed: %c (keycode: %d)\n", keycode, keycode);
         } else {
-            printf("Unknown keycode received: %d\n", keycode);
+            free(fragment);
+            return NULL;
         }
     }
+    return fragment;
 }
 
-void emulate_key_macos() {
-
-}
-
-void emulate_key_win64() {
+Message* receive_message(int serial_fd) {
+    Message* msg = (Message*)malloc(sizeof(Message));
+    if (msg == NULL) {
+        return NULL;
+    }
     
+    Fragment* x = NULL;
+    Fragment* y = NULL;
+    Fragment* info = NULL;
+    
+    if (comm_step == INIT) {
+        x = receive_fragment(serial_fd);
+        if (x == NULL) {
+            free(msg);
+            return NULL;
+        }
+    } else {
+        free(msg);
+        return NULL;
+    }
+    
+    if (comm_step == X_DATA) {
+        y = receive_fragment(serial_fd);
+        if (y == NULL) {
+            free(x);
+            free(msg);
+            return NULL;
+        }
+    } else {
+        free(x);
+        free(msg);
+        return NULL;
+    }
+    
+    if (comm_step == Y_DATA) {
+        info = receive_fragment(serial_fd);
+        if (info == NULL) {
+            free(x);
+            free(y);
+            free(msg);
+            return NULL;
+        }
+    } else {
+        free(x);
+        free(y);
+        free(msg);
+        return NULL;
+    }
+    
+    msg->x = *x;
+    msg->y = *y;
+    msg->info = *info;
+    
+    free(x);
+    free(y);
+    free(info);
+    
+    return msg;
 }

@@ -7,7 +7,11 @@
  * This file implements the functions declared in matrix.h
  */
 
- #include "matrix.h"
+#include "matrix.h"
+
+#include "../../message/message.h"
+
+#include <stdlib.h>
 
 // Helper function to find column index
 int8_t get_column_index(uint_fast16_t port, uint_fast16_t pin) {
@@ -74,12 +78,37 @@ void scan_rows(uint_fast16_t port, uint_fast16_t pin) {
 
         // Check if column is still high (key is at this row)
         if(GPIO_getInputPinValue(port, pin) == GPIO_INPUT_PIN_HIGH) {
-            int8_t key_code = keys[row][column];
+            
+            Fragment* x_ptr = new_fragment(X, row);
+            Fragment* y_ptr = new_fragment(Y, column);
+            Fragment* info_ptr = new_fragment(INFO, 0); // to fix when we know how we send info
 
-            // Toggle LED for visual feedback
-            GPIO_toggleOutputOnPin(GPIO_PORT_P1, GPIO_PIN0);
-            // Send key code
-            UART_transmitData(EUSCI_A2_BASE, key_code);
+            if (x_ptr == NULL || y_ptr == NULL || info_ptr == NULL) {
+                if (x_ptr != NULL) free(x_ptr);
+                if (y_ptr != NULL) free(y_ptr);
+                if (info_ptr != NULL) free(info_ptr);
+                return;
+            }
+
+            Message* msg = new_message(*x_ptr, *y_ptr, *info_ptr);
+
+            if (msg == NULL) {
+                free(x_ptr);
+                free(y_ptr);
+                free(info_ptr);
+                return;
+            }
+
+            free(x_ptr);
+            free(y_ptr);
+            free(info_ptr);
+
+            // Send the message
+            if (send_message(msg)) {
+                // Message sent successfully
+            } else {
+                // Failed to send message
+            }
 
             break;
         }

@@ -1,4 +1,6 @@
+#include "emulator/emulator.h"
 #include "message/message.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
@@ -79,8 +81,10 @@ int main() {
 
     // Main loop: Read from UART and send key events
     while (1) {
-        Message msg = receive_message_linux(serialFd);
-        emulate_key(msg, uinputFd);
+        Message* msg = receive_message(serialFd);
+        if (msg != NULL) {
+            emulator_linux(msg,uinputFd);
+        }
     }
 
     // Cleanup
