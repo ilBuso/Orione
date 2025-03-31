@@ -1,5 +1,6 @@
 #include "message.h"
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -33,7 +34,6 @@ bool send_fragment(Fragment* fragment, RGB rgb) {
         return false;        
     }
 
-    // Toggle LED for visual feedback
     switch (rgb) {
         case RED:
             GPIO_toggleOutputOnPin(GPIO_PORT_P2, GPIO_PIN0);
@@ -46,15 +46,15 @@ bool send_fragment(Fragment* fragment, RGB rgb) {
             break;
     }
     
-    // Send MsgType
     UART_transmitData(EUSCI_A2_BASE, fragment->fragment_type);
-    // Wait for flag to reset
-    while (UART_queryStatusFlags(EUSCI_A2_BASE, EUSCI_A_UART_BUSY));
+    if (!UART_wait(EUSCI_A2_BASE)) {
+        return false;
+    }
 
-    // Send data
     UART_transmitData(EUSCI_A2_BASE, fragment->data);
-    // Wait for flag to reset
-    while (UART_queryStatusFlags(EUSCI_A2_BASE, EUSCI_A_UART_BUSY));
+    if (!UART_wait(EUSCI_A2_BASE)) {
+        return false;
+    }
     
     free(fragment);
     return true;
@@ -94,4 +94,13 @@ bool send_message(Message* msg) {
         
     free(msg);
     return success;
+}
+
+bool UART_wait(uint32_t module_instance) {
+    for ( uint32_t attempts = 0; UART_queryStatusFlags(module_instance, EUSCI_A_UART_BUSY), attempts++) {
+        if (attempts >= UART_MAX_ATTEMPTS) {
+            return false;
+        }
+    }
+    return true;
 }

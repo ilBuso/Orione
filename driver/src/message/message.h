@@ -4,13 +4,15 @@
     #include <stdint.h>
     #include <stdbool.h>
 
+    #define MAX_WAIT_CYCLES 50000
+
     typedef enum : uint8_t {
         INIT = 0,
-        X_MSG_TYPE,
+        X_TYPE,
         X_DATA,
-        Y_MSG_TYPE,
+        Y_TYPE,
         Y_DATA,
-        INFO_MSG_TYPE,
+        INFO_TYPE,
         INFO_DATA
     } Communication;
     
@@ -32,6 +34,6 @@
     } Message;
 
     uint8_t receive_packet(int serial_fd);
-    Fragment* receive_fragment(int serial_fd);
+    Fragment* receive_fragment(int serial_fd, Communication current_step);
     Message* receive_message(int serial_fd);
 #endif // MESSAGES_H

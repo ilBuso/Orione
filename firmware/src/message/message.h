@@ -7,6 +7,8 @@
     #include <stdint.h>
     #include <stdbool.h>
 
+    #define UART_MAX_ATTEMPTS 10000
+
     typedef enum : uint8_t {
         RED,
         GREEN,
@@ -30,7 +32,8 @@
         Fragment info;
     } Message;
 
-    // MSP432
+    bool UART_wait(uint32_t module_instance);
+
     Fragment* new_fragment(FrgType fragment_type, uint8_t data);
     Message* new_message(Fragment x, Fragment y, Fragment info);
 

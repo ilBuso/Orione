@@ -5,7 +5,7 @@
 #include <linux/uinput.h>
 #include <stdlib.h>
 
-volatile uint8_t comm_step = INIT;
+volatile Communication comm_step = INIT;
 
 uint8_t receive_packet(int serial_fd) {
     unsigned char buffer[1];
@@ -18,7 +18,7 @@ uint8_t receive_packet(int serial_fd) {
     }
 }
 
-Fragment* receive_fragment(int serial_fd) {
+Fragment* receive_fragment(int serial_fd, Communication current_step) {
     Fragment* fragment = (Fragment*)malloc(sizeof(Fragment));
     if (fragment == NULL) {
         return NULL;
@@ -29,13 +29,13 @@ Fragment* receive_fragment(int serial_fd) {
     
     for (int i = 0; !received_fragment_type || !received_fragment_data; i++) {
         // Don't know if it is enough or what but is a good way to not do busy waiting inside a function
-        if (i >= 500) {
+        if (i >= MAX_WAIT_CYCLES) {
             return NULL;
         }
 
         uint8_t packet = receive_packet(serial_fd);
         if (packet != 255) {
-            if (comm_step % 2 != 0) {
+            if (comm_step == current_step) {
                 if (!received_fragment_type) {
                     fragment->fragment_type = (FrgType)packet;
                     received_fragment_type = true;
@@ -43,7 +43,7 @@ Fragment* receive_fragment(int serial_fd) {
                     free(fragment);
                     return NULL;
                 }
-            } else {
+            } else if (comm_step == current_step + 1) {
                 if (!received_fragment_data) {
                     fragment->data = packet;
                     received_fragment_data = true;
@@ -51,6 +51,9 @@ Fragment* receive_fragment(int serial_fd) {
                     free(fragment);
                     return NULL;
                 }
+            } else {
+                free(fragment);
+                return NULL;
             }
         } else {
             free(fragment);
@@ -66,13 +69,13 @@ Message* receive_message(int serial_fd) {
         return NULL;
     }
     
-    Fragment* x = NULL;
-    Fragment* y = NULL;
-    Fragment* info = NULL;
+    Fragment* x_fragment = NULL;
+    Fragment* y_fragment = NULL;
+    Fragment* info_fragment = NULL;
     
     if (comm_step == INIT) {
-        x = receive_fragment(serial_fd);
-        if (x == NULL) {
+        x_fragment = receive_fragment(serial_fd, X_TYPE);
+        if (x_fragment == NULL) {
             free(msg);
             return NULL;
         }
@@ -82,40 +85,40 @@ Message* receive_message(int serial_fd) {
     }
     
     if (comm_step == X_DATA) {
-        y = receive_fragment(serial_fd);
-        if (y == NULL) {
-            free(x);
+        y_fragment = receive_fragment(serial_fd, Y_TYPE);
+        if (y_fragment == NULL) {
+            free(x_fragment);
             free(msg);
             return NULL;
         }
     } else {
-        free(x);
+        free(x_fragment);
         free(msg);
         return NULL;
     }
     
     if (comm_step == Y_DATA) {
-        info = receive_fragment(serial_fd);
-        if (info == NULL) {
-            free(x);
-            free(y);
+        info_fragment = receive_fragment(serial_fd, INFO_TYPE);
+        if (info_fragment == NULL) {
+            free(x_fragment);
+            free(y_fragment);
             free(msg);
             return NULL;
         }
     } else {
-        free(x);
-        free(y);
+        free(x_fragment);
+        free(y_fragment);
         free(msg);
         return NULL;
     }
     
-    msg->x = *x;
-    msg->y = *y;
-    msg->info = *info;
+    msg->x = *x_fragment;
+    msg->y = *y_fragment;
+    msg->info = *info_fragment;
     
-    free(x);
-    free(y);
-    free(info);
+    free(x_fragment);
+    free(y_fragment);
+    free(info_fragment);
     
     return msg;
 }
