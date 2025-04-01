@@ -4,11 +4,22 @@
  * @author Alessandro Busola
  * @date   March 2024
  * 
- * This file implements the interrupt handlers and initialization function
+ * This file implements the interrupt handlers
  * declared in interrupt.h.
  */
 
 #include "interrupt.h"
+
+void PORT1_IRQHandler(void) {
+    // Save status and Clear flags
+    uint32_t status = GPIO_getEnabledInterruptStatus(GPIO_PORT_P2);
+    GPIO_clearInterruptFlag(GPIO_PORT_P2, status);
+
+    if (status & GPIO_PIN5) {
+        // Handle mute
+        UART_transmitData(EUSCI_A2_BASE, /*mute/un-mute keycode*/);
+    }
+}
 
 void PORT2_IRQHandler(void) {
     // Save status and Clear flags
@@ -43,9 +54,35 @@ void PORT3_IRQHandler(void) {
     }
 }
 
+volatile uint8_t last_channel_a_state = 0;
+
 void PORT4_IRQHandler(void) {
     uint32_t status = GPIO_getEnabledInterruptStatus(GPIO_PORT_P4);
     GPIO_clearInterruptFlag(GPIO_PORT_P4, status);
+
+
+    if (status & GPIO_PIN3) {
+        // debounce
+
+        
+        // Get status
+        uint8_t channel_a_state = GPIO_getInputPinValue(GPIO_PORT_P4, GPIO_PIN3);
+        uint8_t channel_b_state = GPIO_getInputPinValue(GPIO_PORT_P4, GPIO_PIN1);
+        
+        // If Channel A state changed (i.e., it's different from last_channel_a_state)
+        if (channelAState != last_channel_a_state) {
+            // If Channel A state and Channel B state are different, encoder is rotating clockwise
+            // If Channel A state and Channel B state are the same, encoder is rotating counter-clockwise
+            if (channel_a_state != channel_b_state) {
+                volume++;
+            } else {
+                volume--;
+            }
+            
+            // Update last Channel A state
+            last_channel_a_state = channel_a_state;
+        }    
+    }
 
     // Foreach column pin
     int i;
