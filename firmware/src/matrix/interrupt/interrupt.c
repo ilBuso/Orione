@@ -1,13 +1,3 @@
-/**
- * @file interrupt.c
- * @brief Implementation of interrupt handlers for keyboard matrix scanning
- * @author Alessandro Busola
- * @date   March 2024
- * 
- * This file implements the interrupt handlers and initialization function
- * declared in interrupt.h.
- */
-
 #include "interrupt.h"
 
 void PORT2_IRQHandler(void) {

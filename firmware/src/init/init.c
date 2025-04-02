@@ -1,12 +1,3 @@
-/**
- * @file init.c
- * @brief Implementation of initialization functions
- * @author Alessandro Busola
- * @date   March 2024
- * 
- * This file implements the initialization functions declared in init.h.
-*/
-
 #include "init.h"
 
 void GPIO_init(void) {

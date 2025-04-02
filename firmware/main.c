@@ -1,25 +1,9 @@
-/**
- *  @file   main.c
- *  @brief  Keyboard main file
- *  @author Alessandro Busola
- *  @date   November 2024
- */
-
 #include <ti/devices/msp432p4xx/driverlib/driverlib.h>
 #include "msp.h"
 
 #include "src/init/init.h"
 
-/**
- * @brief Main program entry point
- * 
- * Initializes the system and enters an infinite loop:
- * 1. Stops the watchdog timer
- * 2. Calls init() to initialize all peripherals
- * 3. Enables global interrupts
- * 4. Enters infinite loop (could use low power mode)
- */
-void main(void) {
+int main(void) {
     // Stop watchdog timer
     WDT_A_hold(WDT_A_BASE);
 
@@ -34,6 +18,8 @@ void main(void) {
         // Put CPU into low power mode
         PCM_gotoLPM0();
     }
+
+    return 0;
 }
 
 

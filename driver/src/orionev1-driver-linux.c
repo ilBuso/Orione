@@ -1,4 +1,4 @@
-#include "emulator/emulator.h"
+#include "emulator/emulator-linux.h"
 #include "message/message.h"
 
 #include <stdio.h>
@@ -79,11 +79,15 @@ int main() {
 
     printf("Virtual keyboard initialized. Listening for keypresses...\n");
 
-    // Main loop: Read from UART and send key events
+    // Main loop
     while (1) {
+        // Get message
         Message* msg = receive_message(serialFd);
+        
+        // If a message is received
         if (msg != NULL) {
-            emulator_linux(msg,uinputFd);
+            // emulate key
+            emulate_key(msg,uinputFd);
         }
     }
 
