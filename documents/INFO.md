@@ -1,6 +1,27 @@
 # INFO.md
 This file contains a collection of arguments and information researched individually by members of our group. It has been compiled to ensure that all team members are up to speed with the project's components. In case of any doubts or need for clarification, this document serves as a reference point to look up the relevant information.
 
+# TOC
+- [UART](#uart)
+  - [Pin Functions](#pin-functions)
+  - [Connections](#connections)
+  - [Firmware](#firmware)
+- [Rotary Encoder](#rotary-encoder)
+  - [Pin Functions](#pin-functions-1)
+- [OLED Display](#oled-display)
+  - [Pin Functions](#pin-functions-2)
+- [Keyboard Matrix](#keyboard-matrix)
+  - [Set Up](#set-up)
+  - [How it works](#how-it-works)
+- [Power](#power)
+- [Mechanical Debouncing](#mechanical-debouncing)
+- [Software Debouncing](#software-debouncing)
+- [Interrupt](#interrupt)
+- [Messages](#messages)
+- [Driver](#driver)
+  - [How it works](#how-it-works-1)
+  - [Permissions](#permissions)
+
 # UART
 **UART** (**Universal Asynchronous Receiver-Transmitter**) is a hardware communication protocol that enables asynchronous serial communication between devices. It transmits data one bit at a time without requiring a shared clock signal. Instead, it uses start and stop bits to frame the data, along with optional parity for error detection.
 
