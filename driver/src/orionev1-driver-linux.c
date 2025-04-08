@@ -1,5 +1,6 @@
 #include "emulator/emulator-linux.h"
 #include "message/message.h"
+#include "parser/parser.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,6 +8,8 @@
 #include <linux/uinput.h>
 #include <unistd.h>
 #include <termios.h>
+
+extern Matrix* matrix;
 
 int main() {
     const char *serialPort = "/dev/ttyUSB0"; // Update to match your device node
@@ -79,6 +82,12 @@ int main() {
 
     printf("Virtual keyboard initialized. Listening for keypresses...\n");
 
+    // Parse toml
+    matrix = parse_toml("src/matrix/linux.toml");
+    if (!matrix) {
+        // error handling;
+    }
+
     // Main loop
     while (1) {
         // Get message
@@ -87,7 +96,9 @@ int main() {
         // If a message is received
         if (msg != NULL) {
             // emulate key
-            emulate_key(msg,uinputFd);
+            if (!emulate_key(msg,uinputFd)) {
+                // error handling
+            }
         }
     }
 
