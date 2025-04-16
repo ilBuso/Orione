@@ -24,6 +24,7 @@ void profile_manager_destroy(ProfileManager* limiter) {
   set_destroy(&limiter->modifiers_combination);
 }
 
+// todo: receive coordinates as int
 unsigned int profile_triggered(ProfileManager* manager, const char* pressed_key_coord) {
   if (set_contains(&manager->modifiers_combination, pressed_key_coord) || is_number(pressed_key_coord)) {
     if (!set_contains(&manager->pressed_keys, pressed_key_coord)) {
@@ -64,3 +65,5 @@ unsigned int profile_triggered(ProfileManager* manager, const char* pressed_key_
     return NULL;
   }
 }
+
+// todo: function to handle key release
