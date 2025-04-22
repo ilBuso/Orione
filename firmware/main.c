@@ -19,6 +19,7 @@
  * 3. Enables global interrupts
  * 4. Enters infinite loop (could use low power mode)
  */
+
 void main(void) {
     // Stop watchdog timer
     WDT_A_hold(WDT_A_BASE);
@@ -26,16 +27,12 @@ void main(void) {
     // Initialize all peripherals and settings
     init();
 
-    // Enable global interrupts
-    Interrupt_enableMaster();
-
     // Main loop
     while (1) {
-        // Put CPU into low power mode
-        PCM_gotoLPM0();
+        // Watch For Interrupt
+        __WFI();
     }
 }
-
 
 /*#include <ti/devices/msp432p4xx/driverlib/driverlib.h>
 #include "msp.h"

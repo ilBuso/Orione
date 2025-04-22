@@ -19,6 +19,7 @@
 
     // Libraries
     #include <stdint.h>
+    #include <stdio.h>
 
     // Header files
     #include "../global/global.h"

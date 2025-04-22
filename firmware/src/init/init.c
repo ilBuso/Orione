@@ -9,25 +9,27 @@
 
 #include "init.h"
 
+/// ROWs
+// Set corresponding pins to output
+void row_init(void) {
+    // Set P4.7 as output and drive it high
+    GPIO_setAsOutputPin(GPIO_PORT_P4, GPIO_PIN7);
+    GPIO_setOutputLowOnPin(GPIO_PORT_P4, GPIO_PIN7);
+
+    // Set P5.4 as output and drive it high
+    GPIO_setAsOutputPin(GPIO_PORT_P5, GPIO_PIN4);
+    GPIO_setOutputLowOnPin(GPIO_PORT_P5, GPIO_PIN4);
+}
+
+/// COLUMNs
+// Set corresponding pins to input with pull-down resistors
+void column_init(void) {
+    GPIO_setAsInputPinWithPullUpResistor(GPIO_PORT_P1, GPIO_PIN6 | GPIO_PIN7);
+}
+
 void GPIO_init(void) {
-    /// ROWs
-    // Set corresponding pins to output
-    GPIO_setAsOutputPin(GPIO_PORT_P1, GPIO_PIN6 | GPIO_PIN7);
-    GPIO_setAsOutputPin(GPIO_PORT_P3, GPIO_PIN6);
-    GPIO_setAsOutputPin(GPIO_PORT_P5, GPIO_PIN0 | GPIO_PIN2 | GPIO_PIN7);
-
-    // Set them initially as high
-    GPIO_setOutputHighOnPin(GPIO_PORT_P1, GPIO_PIN6 | GPIO_PIN7);
-    GPIO_setOutputHighOnPin(GPIO_PORT_P3, GPIO_PIN6);
-    GPIO_setOutputHighOnPin(GPIO_PORT_P5, GPIO_PIN0 | GPIO_PIN2 | GPIO_PIN7);
-
-    /// COLUMNs
-    // Set corresponding pins to input with pull-down resistors
-    GPIO_setAsInputPinWithPullDownResistor(GPIO_PORT_P2, GPIO_PIN3 | GPIO_PIN4 | GPIO_PIN6 | GPIO_PIN7);
-    GPIO_setAsInputPinWithPullDownResistor(GPIO_PORT_P3, GPIO_PIN5);
-    GPIO_setAsInputPinWithPullDownResistor(GPIO_PORT_P4, GPIO_PIN0 | GPIO_PIN2 | GPIO_PIN4 | GPIO_PIN5 | GPIO_PIN7);
-    GPIO_setAsInputPinWithPullDownResistor(GPIO_PORT_P5, GPIO_PIN1 | GPIO_PIN4 | GPIO_PIN5 | GPIO_PIN6);
-    GPIO_setAsInputPinWithPullDownResistor(GPIO_PORT_P6, GPIO_PIN1 | GPIO_PIN6 | GPIO_PIN7);
+    row_init();
+    column_init();
 }
 
 void UART_init(void) {
@@ -64,33 +66,21 @@ void UART_init(void) {
 }
 
 void interrupt_init(void) {
+    Interrupt_disableMaster(); // Enable master interrupts
+
     // Configure LOW to HIGH transition interrupts for COLUMNs
-    GPIO_interruptEdgeSelect(GPIO_PORT_P2, GPIO_PIN3 | GPIO_PIN4 | GPIO_PIN6 | GPIO_PIN7, GPIO_LOW_TO_HIGH_TRANSITION);
-    GPIO_interruptEdgeSelect(GPIO_PORT_P3, GPIO_PIN5, GPIO_LOW_TO_HIGH_TRANSITION);
-    GPIO_interruptEdgeSelect(GPIO_PORT_P4, GPIO_PIN0 | GPIO_PIN2 | GPIO_PIN4 | GPIO_PIN5 | GPIO_PIN7, GPIO_LOW_TO_HIGH_TRANSITION);
-    GPIO_interruptEdgeSelect(GPIO_PORT_P5, GPIO_PIN1 | GPIO_PIN4 | GPIO_PIN5 | GPIO_PIN6, GPIO_LOW_TO_HIGH_TRANSITION);
-    GPIO_interruptEdgeSelect(GPIO_PORT_P6, GPIO_PIN1 | GPIO_PIN6 | GPIO_PIN7, GPIO_LOW_TO_HIGH_TRANSITION);
+    GPIO_interruptEdgeSelect(GPIO_PORT_P1, GPIO_PIN6 | GPIO_PIN7, GPIO_HIGH_TO_LOW_TRANSITION);
 
     // Clear any pending interrupts
-    GPIO_clearInterruptFlag(GPIO_PORT_P2, GPIO_PIN3 | GPIO_PIN4 | GPIO_PIN6 | GPIO_PIN7);
-    GPIO_clearInterruptFlag(GPIO_PORT_P3, GPIO_PIN5);
-    GPIO_clearInterruptFlag(GPIO_PORT_P4, GPIO_PIN0 | GPIO_PIN2 | GPIO_PIN4 | GPIO_PIN5 | GPIO_PIN7);
-    GPIO_clearInterruptFlag(GPIO_PORT_P5, GPIO_PIN1 | GPIO_PIN4 | GPIO_PIN5 | GPIO_PIN6);
-    GPIO_clearInterruptFlag(GPIO_PORT_P6, GPIO_PIN1 | GPIO_PIN6 | GPIO_PIN7);
+    GPIO_clearInterruptFlag(GPIO_PORT_P1, GPIO_PIN6 | GPIO_PIN7);
 
     // Enable interrupts on the columns
-    GPIO_enableInterrupt(GPIO_PORT_P2, GPIO_PIN3 | GPIO_PIN4 | GPIO_PIN6 | GPIO_PIN7);
-    GPIO_enableInterrupt(GPIO_PORT_P3, GPIO_PIN5);
-    GPIO_enableInterrupt(GPIO_PORT_P4, GPIO_PIN0 | GPIO_PIN2 | GPIO_PIN4 | GPIO_PIN5 | GPIO_PIN7);
-    GPIO_enableInterrupt(GPIO_PORT_P5, GPIO_PIN1 | GPIO_PIN4 | GPIO_PIN5 | GPIO_PIN6);
-    GPIO_enableInterrupt(GPIO_PORT_P6, GPIO_PIN1 | GPIO_PIN6 | GPIO_PIN7);
+    GPIO_enableInterrupt(GPIO_PORT_P1, GPIO_PIN6 | GPIO_PIN7);
 
     // Enable port interrupts in NVIC
-    Interrupt_enableInterrupt(INT_PORT2);
-    Interrupt_enableInterrupt(INT_PORT3);
-    Interrupt_enableInterrupt(INT_PORT4);
-    Interrupt_enableInterrupt(INT_PORT5);
-    Interrupt_enableInterrupt(INT_PORT6);
+    Interrupt_enableInterrupt(INT_PORT1);
+
+    Interrupt_enableMaster();
 }
 
 void init(void) {
