@@ -20,6 +20,8 @@ void PORT1_IRQHandler(void) {
 
         if (GPIO_getInputPinValue(GPIO_PORT_P1, GPIO_PIN6) == 0) {
             printf("Button 1 pressed (P4.7 → P1.6)\n");
+        } else if (GPIO_getInputPinValue(GPIO_PORT_P1, GPIO_PIN6) == 1) {
+            printf("Button 1 released (P4.7 → P1.6)\n");
         }
 
         GPIO_setOutputLowOnPin(GPIO_PORT_P4, GPIO_PIN7);
@@ -27,6 +29,8 @@ void PORT1_IRQHandler(void) {
 
         if (GPIO_getInputPinValue(GPIO_PORT_P1, GPIO_PIN6) == 0) {
             printf("Button 1 pressed (P5.4 → P1.6)\n");
+        } else if (GPIO_getInputPinValue(GPIO_PORT_P1, GPIO_PIN6) == 1) {
+            printf("Button 1 released (P5.4 → P1.6)\n");
         }
     }
 
@@ -35,14 +39,14 @@ void PORT1_IRQHandler(void) {
         GPIO_setOutputLowOnPin(GPIO_PORT_P5, GPIO_PIN4);
 
         if (GPIO_getInputPinValue(GPIO_PORT_P1, GPIO_PIN7) == 0) {
-            printf("Button 1 pressed (P4.7 → P1.6)\n");
+            printf("Button 1 pressed (P4.7 → P1.7)\n");
         }
 
         GPIO_setOutputLowOnPin(GPIO_PORT_P4, GPIO_PIN7);
         GPIO_setOutputHighOnPin(GPIO_PORT_P5, GPIO_PIN4);
 
         if (GPIO_getInputPinValue(GPIO_PORT_P1, GPIO_PIN7) == 0) {
-            printf("Button 1 pressed (P5.4 → P1.6)\n");
+            printf("Button 1 pressed (P5.4 → P1.7)\n");
         }
     }
 
