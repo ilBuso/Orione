@@ -8,6 +8,7 @@
 */
 
 #include "init.h"
+#include "global.h"
 
 void GPIO_init(void) {
     /// ROWs
@@ -104,6 +105,9 @@ void rotary_encoder_init(void) {
     // Configure ChannelA and ChannelB as input with pull-up resistor
     GPIO_setAsInputPinWithPullUpResistor(GPIO_PORT_P4, GPIO_PIN1 | GPIO_PIN3);
 
+    //Initialise the current state of Channel A
+    last_channel_a_state = GPIO_getInputPinValue(GPIO_PORT_P4, GPIO_PIN3);
+
     // Enable Interrupt on ChannelA
     GPIO_interruptEdgeSelect(GPIO_PORT_P4, GPIO_PIN3, GPIO_BOTH_EDGES);
     GPIO_clearInterruptFlag(GPIO_PORT_P4, GPIO_PIN3);
@@ -116,6 +120,9 @@ void rotary_encoder_init(void) {
     GPIO_interruptEdgeSelect(GPIO_PORT_P1, GPIO_PIN5, GPIO_HIGH_TO_LOW_TRANSITION);
     GPIO_clearInterruptFlag(GPIO_PORT_P1, GPIO_PIN5);
     GPIO_enableInterrupt(GPIO_PORT_P1, GPIO_PIN5);
+
+    //Enable PORT1 interrupt in NVIC
+    Interrupt_enableInterrupt(INT_PORT1);
 }
 
 void init(void) {
@@ -127,4 +134,6 @@ void init(void) {
     UART_init();
 
     rotary_encoder_init();
+
+    UART_transmitData(EUSCI_A2_BASE, volume);
 }

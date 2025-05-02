@@ -10,6 +10,9 @@
 
 #include "global.h"
 
+//Initialise volume at a default value
+volatile uint8_t volume = 50;
+
 // Mapping arrays for rows
 const uint_fast16_t row_port[NUM_ROWS] = {
     GPIO_PORT_P5, GPIO_PORT_P1, GPIO_PORT_P1, GPIO_PORT_P5, GPIO_PORT_P5, GPIO_PORT_P3
