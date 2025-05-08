@@ -1,13 +1,10 @@
-#ifndef PROFILE_MANAGER_H
-#define PROFILE_MANAGER_H
+#pragma once
 
-#include <pthread.h>
-#include <stdbool.h>
-#include <time.h>
-#include <set.h>
-#include <hashmap.h>
+#include <core/set/set.h>
+#include <stdint.h>
 
-typedef struct {
+typedef struct
+{
     SimpleSet modifiers_combination;
     SimpleSet pressed_keys;
     uint64_t last_profile_switch_timestamp;
@@ -15,15 +12,34 @@ typedef struct {
 } ProfileManager;
 
 /**
-* @param rate_limit_ms the minimum time in ms that needs to pass between a profile switch, can be used as debouncer
-*/
+ * @param manager
+ * @param rate_limit_ms the minimum time in ms that needs to pass between a profile switch, can be used as debouncer
+ */
 void profile_manager_init(ProfileManager* manager, unsigned int rate_limit_ms);
 
+/**
+ * Free resources used by the ProfileManager
+ *
+ * @param limiter
+ */
 void profile_manager_destroy(ProfileManager* limiter);
 
 /**
-* @return NULL if no profile has been triggered, an int corresponding to the profile number if a profile has been triggered instead
-*/
-unsigned int profile_triggered(ProfileManager* manager, const char* pressed_key_coord);
+ * Notifies the profile manager that a key has been pressed, which detects whether a profile has been triggered
+ *
+ * @param manager
+ * @param x the x-coordinate of the pressed key
+ * @param y the y-coordinate of the pressed key
+ *
+ * @return NULL if no profile has been triggered, an int corresponding to the profile number if a profile has been triggered instead
+ */
+unsigned int keypress_has_triggered_profile(ProfileManager* manager, int x, int y);
 
-#endif /* PROFILE_MANAGER_H */
+/**
+ * Remember to call this when a key is released, this allows the profile manager to keep in memory the pressed keys
+ *
+ * @param manager
+ * @param x the x-coordinate of the released key
+ * @param y the y-coordinate of the released key
+ */
+void profile_manager_notify_key_release(ProfileManager* manager, int x, int y);

@@ -106,7 +106,7 @@ void rate_limiter_destroy(RateLimiter* limiter) {
 /**
  * Handle key press event
  */
-void handle_key_press(RateLimiter* limiter, int x, int y) {
+void handle_key_press(RateLimiter* limiter, const int x, const int y) {
     char coord_str[32];
     coord_to_string(coord_str, x, y);
 
