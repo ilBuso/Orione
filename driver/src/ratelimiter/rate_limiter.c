@@ -1,10 +1,8 @@
 #include "rate_limiter.h"
 #include "coordinates_helper.h"
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
-#include <set.h>
+#include <core/set/set.h>
 #include <stdbool.h>
 
 
@@ -35,7 +33,7 @@ void* process_keys_thread(void* arg) {
         // Process each pressed key
         for (unsigned int i = 0; i < size; i++) {
             const char* coord_str = set_array[i];
-            time_t last_sent = hashmap_get(&limiter->last_sent_timestamps, coord_str, 0);
+            time_t last_sent = hashmap_get(limiter->last_sent_timestamps, coord_str);
 
             if (current_time - last_sent >= limiter->rate_limit_ms / 1000) {
                 int x, y;

@@ -2,6 +2,8 @@
 // Created by Giulio Pimenoff Verdolin on 08/05/25.
 //
 
+#include <stdio.h>
+
 #if defined(LOG_LEVEL_DEBUG)
     #define LOG_DEBUG(fmt, ...) printf("[DEBUG] " fmt, ##__VA_ARGS__)
     #define LOG_INFO(fmt, ...) printf("[INFO] " fmt, ##__VA_ARGS__)

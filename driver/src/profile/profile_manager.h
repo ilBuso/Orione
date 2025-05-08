@@ -11,6 +11,7 @@ typedef struct
     unsigned int rate_limit_ms;
 } ProfileManager;
 
+// TODO: add param to initialize modifiers_combination
 /**
  * @param manager
  * @param rate_limit_ms the minimum time in ms that needs to pass between a profile switch, can be used as debouncer
@@ -31,9 +32,9 @@ void profile_manager_destroy(ProfileManager* limiter);
  * @param x the x-coordinate of the pressed key
  * @param y the y-coordinate of the pressed key
  *
- * @return NULL if no profile has been triggered, an int corresponding to the profile number if a profile has been triggered instead
+ * @return an int corresponding to the profile number if a profile has been triggered, -1 otherwise
  */
-unsigned int keypress_has_triggered_profile(ProfileManager* manager, int x, int y);
+int keypress_has_triggered_profile(ProfileManager* manager, int x, int y);
 
 /**
  * Remember to call this when a key is released, this allows the profile manager to keep in memory the pressed keys
