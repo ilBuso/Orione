@@ -1,74 +1,67 @@
 #pragma once
 
 #include <pthread.h>
-#include <stdbool.h>
+#include <time.h>
 #include <core/set/set.h>
 #include <core/hashmap/hashmap.h>
 
 /**
- * Callback function type for key events
+ * Callback type for key events.
  *
- * @param x The x-coordinate of the key
- * @param y The y-coordinate of the key
- * @param is_press true for press events, false for release events
+ * @param x The x-coordinate of the key.
+ * @param y The y-coordinate of the key.
+ * @param is_pressed True if the key is pressed, false if released.
  */
-typedef void (*KeyEventCallback)(int x, int y, bool is_press);
+typedef void (*KeyEventCallback)(int x, int y, bool is_pressed);
 
+/**
+ * Structure representing a coordinate string and the last timestamp it was sent.
+ */
+struct coord_time_pair {
+    const char *coord_str;  // Coordinate string key
+    time_t timestamp;       // Last sent timestamp
+};
 
-typedef struct
-{
-    SimpleSet pressed_keys;
-    struct hashmap *last_sent_timestamps;
-    pthread_t thread_id;
-    bool thread_running;
-    pthread_mutex_t lock;
-    unsigned int rate_limit_ms;
-    KeyEventCallback callback;
+typedef struct {
+    simple_set pressed_keys;                // Set of currently pressed keys
+    struct hashmap *last_sent_timestamps; // Hashmap of when keys were last sent
+    pthread_t thread_id;               // Thread ID for the rate limiting thread
+    bool thread_running;               // Flag to indicate if thread is running
+    pthread_mutex_t lock;              // Mutex for thread safety
+    unsigned int rate_limit_ms;        // Rate limit in milliseconds
+    KeyEventCallback callback;         // Callback for key events
 } RateLimiter;
 
 /**
- * Initialize a rate limiter with the specified rate limit in milliseconds
+ * Initializes the rate limiter.
  *
- * @param limiter The rate limiter to initialize
- * @param rate_limit_ms The minimum time between key repeats in milliseconds
- * @param callback Function to call when sending key events
+ * @param limiter Pointer to the RateLimiter structure.
+ * @param rate_limit_ms The rate limit in milliseconds.
+ * @param callback Callback function to be called on key events.
  */
-void rate_limiter_init(
-    RateLimiter* limiter,
-    unsigned int rate_limit_ms,
-    KeyEventCallback callback
-    );
+void rate_limiter_init(RateLimiter* limiter, unsigned int rate_limit_ms, KeyEventCallback callback);
 
 /**
- * Clean up and destroy a rate limiter
+ * Cleans up and destroys the rate limiter, releasing any allocated resources.
  *
- * @param limiter The rate limiter to destroy
+ * @param limiter Pointer to the RateLimiter structure.
  */
 void rate_limiter_destroy(RateLimiter* limiter);
 
 /**
- * Handle a key press event
+ * Handles a key press event.
  *
- * @param limiter The rate limiter
- * @param x The x-coordinate of the key
- * @param y The y-coordinate of the key
+ * @param limiter Pointer to the RateLimiter structure.
+ * @param x The x-coordinate of the key.
+ * @param y The y-coordinate of the key.
  */
-void handle_key_press(RateLimiter* limiter, int x, int y);
+void handle_key_press(RateLimiter* limiter, const int x, const int y);
 
 /**
- * Handle a key release event
+ * Handles a key release event.
  *
- * @param limiter The rate limiter
- * @param x The x-coordinate of the key
- * @param y The y-coordinate of the key
+ * @param limiter Pointer to the RateLimiter structure.
+ * @param x The x-coordinate of the key.
+ * @param y The y-coordinate of the key.
  */
 void handle_key_release(RateLimiter* limiter, int x, int y);
-
-/**
- * Check if the given coordinates correspond to a modifier key
- *
- * @param x The x-coordinate of the key
- * @param y The y-coordinate of the key
- * @return true if it's a modifier key, false otherwise
- */
-bool is_modifier_key(int x, int y);

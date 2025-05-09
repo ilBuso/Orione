@@ -93,7 +93,7 @@ enum CrossPlatformKeyCode {
     KEY_EQUAL,           // =
     KEY_LEFT_BRACKET,    // [
     KEY_RIGHT_BRACKET,   // ]
-    KEY_BACKSLASH,       // \
+    KEY_BACKSLASH,       //
     KEY_SEMICOLON,       // ;
     KEY_APOSTROPHE,      // '
     KEY_COMMA,           // ,

@@ -1,5 +1,6 @@
 #include "profile_manager.h"
 #include "core/coordinates_helper.h"
+#include "matrix/keycode_conversion.c"
 #include <core/set/set.h>
 #include "matrix/matrix.h"
 #include <stdbool.h>
@@ -13,17 +14,14 @@
  * if the key corresponds to a digit key (0–9), it returns the associated integer.
  * If the key is not a digit key, the function returns -1.
  *
- * @param x The row index in the keyboard matrix.
- * @param y The column index in the keyboard matrix.
+ * @param keycode
  * @return
- *   - An integer from 0 to 9 if the key at the given coordinates is a digit key.
- *   - -1 if the key does not represent a digit.
+ *   - An integer from 0 to 9 if the key at the given keycode is a digit
+ *   - -1 if the key does not represent a digit
  */
-bool get_coordinate_number(const int x, const int y)
+bool get_keycode_number(const enum CrossPlatformKeyCode keycode)
 {
-  const enum CrossPlatformKeyCode key = keyboard_matrix[x][y];
-
-  switch (key) {
+  switch (keycode) {
   case KEY_1:
     return 1;
   case KEY_2:
@@ -49,37 +47,44 @@ bool get_coordinate_number(const int x, const int y)
   }
 }
 
-void profile_manager_init(ProfileManager* manager, unsigned int rate_limit_ms) {
+void profile_manager_init(ProfileManager* manager, const unsigned int rate_limit_ms) {
   set_init(&manager->modifiers_combination);
   set_init(&manager->pressed_keys);
   manager->rate_limit_ms = rate_limit_ms;
   manager->last_profile_switch_timestamp = 0;
 }
 
+void profile_manager_add_modifier(ProfileManager* manager, const enum CrossPlatformKeyCode modifier_key_code)
+{
+  set_add(&manager->modifiers_combination, keycode_to_str(modifier_key_code));
+}
+
+void profile_manager_remove_modifier(ProfileManager* manager, const enum CrossPlatformKeyCode modifier_key_code)
+{
+  set_remove(&manager->modifiers_combination, keycode_to_str(modifier_key_code));
+}
+
 void profile_manager_destroy(ProfileManager* limiter) {
   set_destroy(&limiter->modifiers_combination);
 }
 
-int keypress_has_triggered_profile(ProfileManager* manager, const int x, const int y) {
-  char* coords_str = "";
-  coord_to_string(coords_str, x, y);
-  const int number = get_coordinate_number(x, y);
+int keypress_has_triggered_profile(ProfileManager* manager, const enum CrossPlatformKeyCode keycode) {
+  const char* keycode_str = keycode_to_str(keycode);
+  const int number = get_keycode_number(keycode);
 
-  if (set_contains(&manager->modifiers_combination, coords_str) || number != -1) {
-    if (!set_contains(&manager->pressed_keys, coords_str)) {
-      set_add(&manager->pressed_keys, coords_str);
+  if (set_contains(&manager->modifiers_combination, keycode_str) || number != -1) {
+    if (!set_contains(&manager->pressed_keys, keycode_str)) {
+      set_add(&manager->pressed_keys, keycode_str);
 
       uint64_t size = set_length(&manager->modifiers_combination);
-      char** array = set_to_array(&manager->modifiers_combination, size);
+      char** array = set_to_array(&manager->modifiers_combination, &size);
 
       bool valid = true;
       int modifiers_count = 0;
       int profile_number = -1;
       for (int i = 0; i < size; i++) {
-        int curr_x, curr_y = 0;
-        parse_coord_string(array[i], &curr_x, &curr_y);
-
-        const int curr_array_element_number = get_coordinate_number(x, y);
+        const enum CrossPlatformKeyCode curr_keycode = str_to_keycode(array[i]);
+        const int curr_array_element_number = get_keycode_number(curr_keycode);
 
         if (set_contains(&manager->pressed_keys, array[i])) {
           modifiers_count++;
@@ -94,7 +99,7 @@ int keypress_has_triggered_profile(ProfileManager* manager, const int x, const i
         return -1;
       }
 
-      time_t current_time = time(NULL);
+      const time_t current_time = time(NULL);
 
       if (current_time - manager->last_profile_switch_timestamp >= manager->rate_limit_ms / 1000) {
         return profile_number;
@@ -109,4 +114,12 @@ int keypress_has_triggered_profile(ProfileManager* manager, const int x, const i
   }
 }
 
-// todo: function to handle key release
+void profile_manager_notify_key_release(ProfileManager* manager, const enum CrossPlatformKeyCode keycode)
+{
+  const char* keycode_str = keycode_to_str(keycode);
+
+  if (set_contains(&manager->pressed_keys, keycode_str))
+  {
+    set_remove(&manager->pressed_keys, keycode_str);
+  }
+}
