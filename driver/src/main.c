@@ -35,17 +35,23 @@ int main() {
         }
     }
 
+    profile_manager_destroy(&profile_manager);
+    rate_limiter_destroy(&rate_limiter);
     input_device_cleanup();
     uart_cleanup();
 }
 
 void key_event_callback(const int x, const int y, const bool pressed) {
-    const int new_profile = keypress_has_triggered_profile(&profile_manager, x, y);
+    enum CrossPlatformKeyCode keycode = keyboard_matrix[x][y];
+
+    const int new_profile = keypress_has_triggered_profile(&profile_manager, keycode);
     if (new_profile != -1)
     {
         // todo: change matrix to new profile
+
+        // reload the key_code if matrix changed
+        keycode = keyboard_matrix[x][y];
     }
 
-    const enum CrossPlatformKeyCode key_code = keyboard_matrix[x][y];
-    input_device_send_key(key_code, pressed);
+    input_device_send_key(keycode, pressed);
 }
