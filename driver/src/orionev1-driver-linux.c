@@ -1,5 +1,6 @@
-#include "emulator/emulator-linux.h"
+#include "emulator/linux/emulator.h"
 #include "message/message.h"
+#include "parser/parser.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -79,6 +80,12 @@ int main() {
 
     printf("Virtual keyboard initialized. Listening for keypresses...\n");
 
+    // Parse toml
+    const Parse* parse = parse_toml("src/matrix/linux.toml");
+    if (!parse) {
+        // error handling;
+    }
+
     // Main loop
     while (1) {
         // Get message
@@ -87,7 +94,9 @@ int main() {
         // If a message is received
         if (msg != NULL) {
             // emulate key
-            emulate_key(msg,uinputFd);
+            if (!emulate_key(msg,uinputFd, parse)) {
+                // error handling
+            }
         }
     }
 

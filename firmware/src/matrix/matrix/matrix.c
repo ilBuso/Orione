@@ -1,4 +1,5 @@
 #include "matrix.h"
+#include <stdint.h>
 #include <time.h>
 
 #include "../../message/message.h"
@@ -69,15 +70,22 @@ void scan_rows(uint_fast16_t port, uint_fast16_t pin) {
         // Set current row high
         GPIO_setOutputHighOnPin(row_port[row], row_pins[row]);
         
-        // Brief delay to stabilize
-        //__delay_cycles(10);
-        
         // Check if column is still high (key is at this row)
         if(GPIO_getInputPinValue(port, pin) == GPIO_INPUT_PIN_HIGH) {
+
+            uint8_t info;
+            // based on tipe of interrupt insert rightmost bit
+                // rising edge
+                // falling edge
+
+            // if encoder add next bit
+
+            // add version
+
             // Create message fragments for key position
             Fragment* x_ptr = new_fragment(X, row);
             Fragment* y_ptr = new_fragment(Y, column);
-            Fragment* info_ptr = new_fragment(INFO, 0); // to fix when we know how we send info
+            Fragment* info_ptr = new_fragment(INFO, info);
             
             // Check for memory allocation failures
             if (x_ptr == NULL || y_ptr == NULL || info_ptr == NULL) {
@@ -128,5 +136,5 @@ void scan_rows(uint_fast16_t port, uint_fast16_t pin) {
     }
     
     // Re-enable interrupts
-    GPIO_enableInterrupt(*port*, *pin*);
+    GPIO_enableInterrupt(port, pin);
 }
