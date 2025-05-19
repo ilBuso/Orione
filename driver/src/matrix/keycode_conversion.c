@@ -57,7 +57,7 @@ const char* keycode_to_str(enum CrossPlatformKeyCode key_code) {
 
 // Convert from string to CrossPlatformKeyCode
 enum CrossPlatformKeyCode str_to_keycode(const char* str) {
-    #define X(key) if (strcmp(keyString, #key) == 0) return key;
+    #define X(key) if (strcmp(str, #key) == 0) return key;
     KEYCODE_MAP(X)
     #undef X
 
