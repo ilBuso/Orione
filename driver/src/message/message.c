@@ -2,28 +2,13 @@
 
 #include <stdio.h>
 #include <unistd.h>
-#include <linux/uinput.h>
 #include <stdlib.h>
+#include <core/io/uart.h>
 
 // Global state tracking the current step in the communication protocol
 volatile Communication comm_step = INIT;
 
-uint8_t receive_packet(int serial_fd) {
-    unsigned char buffer[1];
-    // Read a single byte from the serial connection
-    ssize_t bytes_read = read(serial_fd, buffer, sizeof(buffer));
-    
-    if (bytes_read > 0) {
-        // Advance to next communication step when a byte is successfully read
-        comm_step++;
-        return (uint8_t)buffer[0];
-    } else {
-        // Return error code 255 if no data was received
-        return 255;
-    }
-}
-
-Fragment* receive_fragment(int serial_fd, Communication current_step) {
+Fragment* receive_fragment(Communication current_step) {
     // Allocate memory for a new fragment
     Fragment* fragment = (Fragment*)malloc(sizeof(Fragment));
     if (fragment == NULL) {
@@ -43,7 +28,7 @@ Fragment* receive_fragment(int serial_fd, Communication current_step) {
         }
         
         // Get a packet from the serial connection
-        uint8_t packet = receive_packet(serial_fd);
+        uint8_t packet = uart_read_byte();
         
         // If we received valid data
         if (packet != 255) {
@@ -83,7 +68,7 @@ Fragment* receive_fragment(int serial_fd, Communication current_step) {
     return fragment;
 }
 
-Message* receive_message(int serial_fd) {
+Message* receive_message() {
     // Allocate memory for a new message
     Message* msg = (Message*)malloc(sizeof(Message));
     if (msg == NULL) {
@@ -97,7 +82,7 @@ Message* receive_message(int serial_fd) {
     // A complete message consists of three fragments: X, Y, and INFO
     // First, receive X fragment
     if (comm_step == INIT) {
-        x_fragment = receive_fragment(serial_fd, X_TYPE);
+        x_fragment = receive_fragment(X_TYPE);
         if (x_fragment == NULL) {
             free(msg);
             return NULL;
@@ -110,7 +95,7 @@ Message* receive_message(int serial_fd) {
     
     // Next, receive Y fragment
     if (comm_step == X_DATA) {
-        y_fragment = receive_fragment(serial_fd, Y_TYPE);
+        y_fragment = receive_fragment(Y_TYPE);
         if (y_fragment == NULL) {
             free(x_fragment);
             free(msg);
@@ -125,7 +110,7 @@ Message* receive_message(int serial_fd) {
     
     // Finally, receive INFO fragment
     if (comm_step == Y_DATA) {
-        info_fragment = receive_fragment(serial_fd, INFO_TYPE);
+        info_fragment = receive_fragment(INFO_TYPE);
         if (info_fragment == NULL) {
             free(x_fragment);
             free(y_fragment);

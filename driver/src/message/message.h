@@ -33,7 +33,6 @@
         Fragment info;
     } Message;
 
-    uint8_t receive_packet(int serial_fd);
-    Fragment* receive_fragment(int serial_fd, Communication current_step);
-    Message* receive_message(int serial_fd);
+    Fragment* receive_fragment(Communication current_step);
+    Message* receive_message();
 #endif // MESSAGES_H
