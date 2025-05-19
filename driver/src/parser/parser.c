@@ -7,75 +7,14 @@
 
 #include "../tomlc99/toml.h"
 
-// Function to get element at specific coordinates with O(1) access
-uint8_t parse_get_base(const Parse* parse, int row, int col) {
-    if (row < 0 || row >= parse->rows || col < 0 || col >= parse->cols) {
+// Generic function to get element from any layer with O(1) access
+uint8_t parse_get_layer(const Parse* parse, int layer_index, int row, int col) {
+    if (layer_index < 0 || layer_index >= parse->num_layers ||
+        row < 0 || row >= parse->rows || 
+        col < 0 || col >= parse->cols) {
         return 0; // Return 0 for out-of-bounds
     }
-    return parse->base[row * parse->cols + col];
-}
-
-uint8_t parse_get_layer2(const Parse* parse, int row, int col) {
-    if (row < 0 || row >= parse->rows || col < 0 || col >= parse->cols) {
-        return 0; // Return 0 for out-of-bounds
-    }
-    return parse->layer2[row * parse->cols + col];
-}
-
-uint8_t parse_get_layer3(const Parse* parse, int row, int col) {
-    if (row < 0 || row >= parse->rows || col < 0 || col >= parse->cols) {
-        return 0; // Return 0 for out-of-bounds
-    }
-    return parse->layer3[row * parse->cols + col];
-}
-
-uint8_t parse_get_layer4(const Parse* parse, int row, int col) {
-    if (row < 0 || row >= parse->rows || col < 0 || col >= parse->cols) {
-        return 0; // Return 0 for out-of-bounds
-    }
-    return parse->layer4[row * parse->cols + col];
-}
-
-uint8_t parse_get_layer5(const Parse* parse, int row, int col) {
-    if (row < 0 || row >= parse->rows || col < 0 || col >= parse->cols) {
-        return 0; // Return 0 for out-of-bounds
-    }
-    return parse->layer5[row * parse->cols + col];
-}
-
-uint8_t parse_get_layer6(const Parse* parse, int row, int col) {
-    if (row < 0 || row >= parse->rows || col < 0 || col >= parse->cols) {
-        return 0; // Return 0 for out-of-bounds
-    }
-    return parse->layer6[row * parse->cols + col];
-}
-
-uint8_t parse_get_layer7(const Parse* parse, int row, int col) {
-    if (row < 0 || row >= parse->rows || col < 0 || col >= parse->cols) {
-        return 0; // Return 0 for out-of-bounds
-    }
-    return parse->layer7[row * parse->cols + col];
-}
-
-uint8_t parse_get_layer8(const Parse* parse, int row, int col) {
-    if (row < 0 || row >= parse->rows || col < 0 || col >= parse->cols) {
-        return 0; // Return 0 for out-of-bounds
-    }
-    return parse->layer8[row * parse->cols + col];
-}
-
-uint8_t parse_get_layer9(const Parse* parse, int row, int col) {
-    if (row < 0 || row >= parse->rows || col < 0 || col >= parse->cols) {
-        return 0; // Return 0 for out-of-bounds
-    }
-    return parse->layer9[row * parse->cols + col];
-}
-
-uint8_t parse_get_layer0(const Parse* parse, int row, int col) {
-    if (row < 0 || row >= parse->rows || col < 0 || col >= parse->cols) {
-        return 0; // Return 0 for out-of-bounds
-    }
-    return parse->layer0[row * parse->cols + col];
+    return parse->layers[layer_index][row * parse->cols + col];
 }
 
 // Function to get encoder element at index
@@ -86,48 +25,39 @@ uint8_t parse_get_encoder(const Parse* parse, int index) {
     return parse->encoder[index];
 }
 
-// Function to free matrix memory
+// Function to free all memory
 void parse_free(Parse* parse) {
     if (parse) {
-        if (parse->base) {
-            free(parse->base);
+        if (parse->layers) {
+            // Free all layer data
+            for (int i = 0; i < parse->num_layers; i++) {
+                if (parse->layers[i]) {
+                    free(parse->layers[i]);
+                }
+            }
+            free(parse->layers);
         }
-        if (parse->layer2) {
-            free(parse->layer2);
+        
+        if (parse->layer_names) {
+            // Free all layer names
+            for (int i = 0; i < parse->num_layers; i++) {
+                if (parse->layer_names[i]) {
+                    free(parse->layer_names[i]);
+                }
+            }
+            free(parse->layer_names);
         }
-        if (parse->layer3) {
-            free(parse->layer3);
-        }
-        if (parse->layer4) {
-            free(parse->layer4);
-        }
-        if (parse->layer5) {
-            free(parse->layer5);
-        }
-        if (parse->layer6) {
-            free(parse->layer6);
-        }
-        if (parse->layer7) {
-            free(parse->layer7);
-        }
-        if (parse->layer8) {
-            free(parse->layer8);
-        }
-        if (parse->layer9) {
-            free(parse->layer9);
-        }
-        if (parse->layer0) {
-            free(parse->layer0);
-        }
+        
         if (parse->encoder) {
             free(parse->encoder);
         }
+        
         free(parse);
     }
 }
 
 // Helper function to parse a specific layer
-static int parse_layer_data(toml_array_t* layer_array, uint8_t* layer_data, int rows, int cols, Parse* parse) {
+static int parse_layer_data(toml_array_t* layer_array, uint8_t* layer_data, int rows, int cols) {
     if (!layer_array) {
         // It's ok if some layers are missing
         memset(layer_data, 0, rows * cols * sizeof(uint8_t));
@@ -183,6 +113,25 @@ Parse* parse_toml(const char* filename) {
     if (!conf) {
         fprintf(stderr, "Cannot parse TOML file: %s\n", errbuf);
         return NULL;
+    }
+    
+    // Get the info table
+    toml_table_t* info = toml_table_in(conf, "info");
+    const char* os = NULL;
+    bool active = false;
+    
+    if (info) {
+        // Get OS string
+        toml_datum_t os_datum = toml_string_in(info, "os");
+        if (os_datum.ok) {
+            os = os_datum.u.s; // Will be freed with toml_free
+        }
+        
+        // Get active boolean
+        toml_datum_t active_datum = toml_bool_in(info, "active");
+        if (active_datum.ok) {
+            active = active_datum.u.b;
+        }
     }
     
     // Get the dimension table
@@ -241,80 +190,69 @@ Parse* parse_toml(const char* filename) {
         return NULL;
     }
     
+    memset(parse, 0, sizeof(Parse)); // Initialize all to zero
+    
+    // Copy OS string if available
+    if (os) {
+        parse->os = strdup(os);
+    }
+    
+    parse->active = active;
     parse->rows = rows;
     parse->cols = cols;
     
-    // Allocate memory for data (array of uint8_t)
-    parse->base = (uint8_t*)malloc(rows * cols * sizeof(uint8_t));
-    parse->layer2 = (uint8_t*)malloc(rows * cols * sizeof(uint8_t));
-    parse->layer3 = (uint8_t*)malloc(rows * cols * sizeof(uint8_t));
-    parse->layer4 = (uint8_t*)malloc(rows * cols * sizeof(uint8_t));
-    parse->layer5 = (uint8_t*)malloc(rows * cols * sizeof(uint8_t));
-    parse->layer6 = (uint8_t*)malloc(rows * cols * sizeof(uint8_t));
-    parse->layer7 = (uint8_t*)malloc(rows * cols * sizeof(uint8_t));
-    parse->layer8 = (uint8_t*)malloc(rows * cols * sizeof(uint8_t));
-    parse->layer9 = (uint8_t*)malloc(rows * cols * sizeof(uint8_t));
-    parse->layer0 = (uint8_t*)malloc(rows * cols * sizeof(uint8_t));
+    // Define layer names
+    const char* layer_names[] = {
+        "base", "layer2", "layer3", "layer4", "layer5", 
+        "layer6", "layer7", "layer8", "layer9", "layer0"
+    };
+    int num_layers = sizeof(layer_names) / sizeof(layer_names[0]);
+    
+    // Allocate arrays for layer pointers and names
+    parse->layers = (uint8_t**)malloc(num_layers * sizeof(uint8_t*));
+    parse->layer_names = (char**)malloc(num_layers * sizeof(char*));
     parse->encoder = (uint8_t*)malloc(ENCODER_COUNT * sizeof(uint8_t));
     
-    if (!parse->base ||
-        !parse->layer2 ||
-        !parse->layer3 ||
-        !parse->layer4 ||
-        !parse->layer5 ||
-        !parse->layer6 ||
-        !parse->layer7 ||
-        !parse->layer8 ||
-        !parse->layer9 ||
-        !parse->layer0 ||
-        !parse->encoder) {
+    if (!parse->layers || !parse->layer_names || !parse->encoder) {
         fprintf(stderr, "Memory allocation failed\n");
         parse_free(parse);
         toml_free(conf);
         return NULL;
     }
     
-    // Get all layer arrays
-    toml_array_t* base_array = toml_array_in(matrix, "base");
-    toml_array_t* layer2_array = toml_array_in(matrix, "layer2");
-    toml_array_t* layer3_array = toml_array_in(matrix, "layer3");
-    toml_array_t* layer4_array = toml_array_in(matrix, "layer4");
-    toml_array_t* layer5_array = toml_array_in(matrix, "layer5");
-    toml_array_t* layer6_array = toml_array_in(matrix, "layer6");
-    toml_array_t* layer7_array = toml_array_in(matrix, "layer7");
-    toml_array_t* layer8_array = toml_array_in(matrix, "layer8");
-    toml_array_t* layer9_array = toml_array_in(matrix, "layer9");
-    toml_array_t* layer0_array = toml_array_in(matrix, "layer0");
-    
-    // Base layer is required
-    if (!base_array) {
-        fprintf(stderr, "No base array found\n");
-        parse_free(parse);
-        toml_free(conf);
-        return NULL;
+    // Initialize all pointers to NULL for safety
+    for (int i = 0; i < num_layers; i++) {
+        parse->layers[i] = NULL;
+        parse->layer_names[i] = NULL;
     }
     
-    // Parse base layer (required)
-    if (!parse_layer_data(base_array, parse->base, rows, cols, parse)) {
-        parse_free(parse);
-        toml_free(conf);
-        return NULL;
+    // Parse all layers using a loop
+    int loaded_layers = 0;
+    for (int i = 0; i < num_layers; i++) {
+        toml_array_t* layer_array = toml_array_in(matrix, layer_names[i]);
+        
+        // Allocate memory for this layer
+        parse->layers[loaded_layers] = (uint8_t*)malloc(rows * cols * sizeof(uint8_t));
+        if (!parse->layers[loaded_layers]) {
+            fprintf(stderr, "Memory allocation failed for layer %s\n", layer_names[i]);
+            parse_free(parse);
+            toml_free(conf);
+            return NULL;
+        }
+        
+        parse->layer_names[loaded_layers] = strdup(layer_names[i]);
+        
+        // Parse this layer
+        if (!parse_layer_data(layer_array, parse->layers[loaded_layers], rows, cols)) {
+            parse_free(parse);
+            toml_free(conf);
+            return NULL;
+        }
+        
+        loaded_layers++;
     }
     
-    // Parse other layers (optional)
-    if (!parse_layer_data(layer2_array, parse->layer2, rows, cols, parse) ||
-        !parse_layer_data(layer3_array, parse->layer3, rows, cols, parse) ||
-        !parse_layer_data(layer4_array, parse->layer4, rows, cols, parse) ||
-        !parse_layer_data(layer5_array, parse->layer5, rows, cols, parse) ||
-        !parse_layer_data(layer6_array, parse->layer6, rows, cols, parse) ||
-        !parse_layer_data(layer7_array, parse->layer7, rows, cols, parse) ||
-        !parse_layer_data(layer8_array, parse->layer8, rows, cols, parse) ||
-        !parse_layer_data(layer9_array, parse->layer9, rows, cols, parse) ||
-        !parse_layer_data(layer0_array, parse->layer0, rows, cols, parse)) {
-        parse_free(parse);
-        toml_free(conf);
-        return NULL;
-    }
+    parse->num_layers = loaded_layers;
     
     // Parse encoder array
     for (int i = 0; i < ENCODER_COUNT; i++) {

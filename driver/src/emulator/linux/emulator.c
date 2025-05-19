@@ -16,39 +16,60 @@ int8_t read_bit(uint8_t packet, int bit_pos) {
 bool emulate_key(Message* msg, int uinput_fd, const Parse* parse) {
     // to review based on how the coordinates are sent
     if (msg->x.data <= NUM_COLS && msg->y.data <= NUM_ROWS) {
-        
-        // key pressed/released
-        bool key_pressed;
-        int8_t pressed_flag = read_bit(msg->info.data, 0);
-        if (pressed_flag != -1) {
-            if (pressed_flag == 0) {
-                key_pressed = false;
-            }
-            if (pressed_flag == 1) {
-                key_pressed = true;
-            }
-        } else {
-            //error
-        }
 
-        // encoder
+        // layer
         bool encoder;
-        uint8_t keycode;
+        uint8_t layer;
 
+        // check if is encoder or keyboard layer
+        uint8_t keycode;
         int8_t encoder_flag = read_bit(msg->info.data, 0);
         if (encoder_flag != -1) {
             // is NOT encoder key
             if (encoder_flag == 0) {
                 encoder = false;
-                keycode; /////// handle the layerssssss-----------------------------------------
             }
             // is encoder key
             if (encoder_flag == 1) {
                 encoder = true;
+
+                // get keycode
                 keycode = parse_get_encoder(parse, msg->x.data);
             }
         } else {
             //error
+        }
+
+        // set key-state matrix
+        int8_t pressed_flag = read_bit(msg->info.data, 0);
+        if (pressed_flag != -1) {
+            if (pressed_flag == 0) {
+                // change key-state matrix
+                if (encoder) {
+                    // encoder
+                } else {
+                    // matrix
+                }
+            }
+            if (pressed_flag == 1) {
+                // change key-state matrix
+                if (encoder) {
+                    // encoder
+                } else {
+                    // matrix
+                }
+            }
+        } else {
+            //error
+        }
+
+        // if it is a normal layer
+        if (!encoder) {
+            // call function to get current layer
+            //layer = 
+            
+            // get right keycode from parser
+            //parse_get_layer(const Parse *parse, int layer_index, int row, int col)
         }
 
         if (keycode != KEY_RESERVED) {
