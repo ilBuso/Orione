@@ -6,12 +6,12 @@
 
 #include "profile_manager.h"
 #include "rate_limiter.h"
-#import "core/io/uart.h"
-#import "core/io/input_device.h"
-#import "core/logging.c"
-#import "matrix/keycodes.h"
-#import "matrix/matrix.h"
-#import "global/global.h"
+#include "core/io/uart.h"
+#include "core/io/input_device.h"
+#include "core/logging.c"
+#include "matrix/keycodes.h"
+#include "matrix/matrix.h"
+#include "global/global.h"
 
 static ProfileManager profile_manager;
 static RateLimiter rate_limiter;

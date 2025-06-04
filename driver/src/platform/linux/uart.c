@@ -10,8 +10,8 @@
 #include <unistd.h>
 #include <termios.h>
 
-#import "core/io/uart.h"
-#import "core/logging.c"
+#include "core/io/uart.h"
+#include "core/logging.c"
 
 #ifndef LINUX_SERIAL_PORT
 #define LINUX_SERIAL_PORT "/dev/ttyUSB0"  // Fallback default if not defined

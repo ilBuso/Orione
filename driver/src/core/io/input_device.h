@@ -4,7 +4,7 @@
 
 #pragma once
 
-#import "core/matrix/keycodes.h"
+#include "matrix/keycodes.h"
 
 /**
  * Initializes the input device.

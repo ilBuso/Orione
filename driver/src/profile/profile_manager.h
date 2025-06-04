@@ -2,6 +2,7 @@
 
 #include <core/set/set.h>
 #include <stdint.h>
+#include "matrix/keycodes.h"
 
 typedef struct
 {

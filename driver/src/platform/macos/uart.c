@@ -10,8 +10,8 @@
 #include <IOKit/IOKitLib.h>
 #include <IOKit/hid/IOHIDManager.h>
 
-#import "core/io/uart.h"
-#import "core/logging.c"
+#include "core/io/uart.h"
+#include "core/logging.c"
 
 #ifndef MACOS_SERIAL_PORT
 #define MACOS_SERIAL_PORT "/dev/cu.usbserial"
