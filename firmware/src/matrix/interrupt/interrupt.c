@@ -1,7 +1,7 @@
 #include "interrupt.h"
 
 // 24 MHz DCO → 24.000.000 tick/s → 50 ms = 24e6 * 0.05 = 1.200.000 tick
-#define RELEASE_DEBOUNCE_TICKS 2000000
+#define RELEASE_DEBOUNCE_TICKS 3000000
 
 // Timer32_1 interrupt handler (T32_INT2_IRQHandler for Timer32_1)
 void T32_INT2_IRQHandler(void) {
@@ -12,6 +12,7 @@ void T32_INT2_IRQHandler(void) {
     Timer32_haltTimer(TIMER32_1_BASE);
 
     // No new interrupt arrived for 50 ms:
+    printf("released\n");
     scan_rows(GPIO_PORT_P5, port_5_columns[1][0], 0);
 }
 
@@ -35,7 +36,8 @@ void PORT2_IRQHandler(void) {
     GPIO_clearInterruptFlag(GPIO_PORT_P2, status);
 
     // Foreach column pin
-    for (int i = 0; i < PORT_2_NUM_PINS; i++) {
+    int i = 0;
+    for (i = 0; i < PORT_2_NUM_PINS; i++) {
         // Check if is the origin of the interrupt
         if(status & port_2_columns[i][0]) {
             // Find triggering row
@@ -51,7 +53,8 @@ void PORT3_IRQHandler(void) {
     GPIO_clearInterruptFlag(GPIO_PORT_P3, status);
 
     // Foreach column pin
-    for (int i = 0; i < PORT_3_NUM_PINS; i++) {
+    int i = 0;
+    for (i = 0; i < PORT_3_NUM_PINS; i++) {
         // Check if is the origin of the interrupt
         if(status & port_3_columns[i][0]) {
             // Find triggering row
@@ -67,7 +70,8 @@ void PORT4_IRQHandler(void) {
     GPIO_clearInterruptFlag(GPIO_PORT_P4, status);
 
     // Foreach column pin
-    for (int i = 0; i < PORT_4_NUM_PINS; i++) {
+    int i = 0;
+    for (i = 0; i < PORT_4_NUM_PINS; i++) {
         // Check if is the origin of the interrupt
         if(status & port_4_columns[i][0]) {
             // Find triggering row
@@ -83,7 +87,8 @@ void PORT5_IRQHandler(void) {
     GPIO_clearInterruptFlag(GPIO_PORT_P5, status);
 
     // Foreach column pin
-    for (int i = 0; i < PORT_5_NUM_PINS; i++) {
+    int i = 0;
+    for (i = 0; i < PORT_5_NUM_PINS; i++) {
         // Check if is the origin of the interrupt
         if(status & port_5_columns[i][0]) {
             // Find triggering row
@@ -99,7 +104,8 @@ void PORT6_IRQHandler(void) {
     GPIO_clearInterruptFlag(GPIO_PORT_P6, status);
 
     // Foreach column pin
-    for (int i = 0; i < PORT_6_NUM_PINS; i++) {
+    int i = 0;
+    for (i = 0; i < PORT_6_NUM_PINS; i++) {
         // Check if is the origin of the interrupt
         if(status & port_6_columns[i][0]) {
             // Find triggering row

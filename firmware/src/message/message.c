@@ -108,7 +108,7 @@ bool send_message(Message* msg) {
 // Waits for UART to be ready with timeout protection
 bool UART_wait(uint32_t module_instance) {
     int attempts = 0;
-    for (; UART_queryStatusFlags(module_instance, EUSCI_A_UART_BUSY), attempts++) {
+    for (; UART_queryStatusFlags(module_instance, EUSCI_A_UART_BUSY); attempts++) {
         if (attempts >= UART_MAX_ATTEMPTS) {
             return false;
         }

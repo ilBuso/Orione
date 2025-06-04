@@ -9,16 +9,33 @@
 
     #define UART_MAX_ATTEMPTS 10000
 
-    typedef enum : uint8_t {
+//    typedef enum : uint8_t {
+//        RED,
+//        GREEN,
+//        BLUE
+//    } RGB;
+//
+//    typedef enum : uint8_t {
+//        X,
+//        Y,
+//        INFO,
+//    } FrgType;
+//
+//    typedef struct {
+//        FrgType fragment_type;
+//        uint8_t data;
+//    } Fragment;
+
+    typedef enum {
         RED,
         GREEN,
         BLUE
     } RGB;
 
-    typedef enum : uint8_t {
+    typedef enum {
         X,
         Y,
-        INFO,
+        INFO
     } FrgType;
 
     typedef struct {
