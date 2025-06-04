@@ -47,7 +47,7 @@ int8_t get_column_index(uint_fast16_t port, uint_fast16_t pin) {
     return -1;
 }
 
-void scan_rows(uint_fast16_t port, uint_fast16_t pin) {
+void scan_rows(uint_fast16_t port, uint_fast16_t pin, uint8_t pressed) {
     // Get column index for the triggered pin
     int8_t column = get_column_index(port, pin);
     if (column < 0) {
@@ -77,8 +77,11 @@ void scan_rows(uint_fast16_t port, uint_fast16_t pin) {
             // Create message fragments for key position
             Fragment* x_ptr = new_fragment(X, row);
             Fragment* y_ptr = new_fragment(Y, column);
-            Fragment* info_ptr = new_fragment(INFO, 0); // to fix when we know how we send info
-            
+            Fragment* info_ptr = new_fragment(INFO, pressed);
+
+            // debug
+            printf("port: %d, pin: %d\n ", port, pin);
+
             // Check for memory allocation failures
             if (x_ptr == NULL || y_ptr == NULL || info_ptr == NULL) {
                 if (x_ptr != NULL) free(x_ptr);
@@ -128,5 +131,5 @@ void scan_rows(uint_fast16_t port, uint_fast16_t pin) {
     }
     
     // Re-enable interrupts
-    GPIO_enableInterrupt(*port*, *pin*);
+    GPIO_enableInterrupt(port, pin);
 }

@@ -2,8 +2,10 @@
 #define INTERRUPT_H
 
     #include <ti/devices/msp432p4xx/driverlib/driverlib.h>
+    #include <ti/devices/msp432p4xx/driverlib/Timer32.h>
     #include "msp.h"
 
+    #include <stdio.h>
     #include <stdint.h>
 
     #include "../global/global.h"
