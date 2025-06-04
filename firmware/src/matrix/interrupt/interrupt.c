@@ -12,7 +12,7 @@ void T32_INT2_IRQHandler(void) {
     Timer32_haltTimer(TIMER32_1_BASE);
 
     // No new interrupt arrived for 50 ms:
-    printf("released\n");
+    scan_rows(GPIO_PORT_P5, port_5_columns[1][0], 0);
 }
 
 void restart_timer(void) {
@@ -39,7 +39,7 @@ void PORT2_IRQHandler(void) {
         // Check if is the origin of the interrupt
         if(status & port_2_columns[i][0]) {
             // Find triggering row
-            scan_rows(GPIO_PORT_P2, port_2_columns[i][0]);
+            scan_rows(GPIO_PORT_P2, port_2_columns[i][0], 1);
             restart_timer();
             break;
         }
@@ -55,7 +55,7 @@ void PORT3_IRQHandler(void) {
         // Check if is the origin of the interrupt
         if(status & port_3_columns[i][0]) {
             // Find triggering row
-            scan_rows(GPIO_PORT_P3, port_3_columns[i][0]);
+            scan_rows(GPIO_PORT_P3, port_3_columns[i][0], 1);
             restart_timer();
             break;
         }
@@ -71,7 +71,7 @@ void PORT4_IRQHandler(void) {
         // Check if is the origin of the interrupt
         if(status & port_4_columns[i][0]) {
             // Find triggering row
-            scan_rows(GPIO_PORT_P4, port_4_columns[i][0]);
+            scan_rows(GPIO_PORT_P4, port_4_columns[i][0], 1);
             restart_timer();
             break;
         }
@@ -87,7 +87,7 @@ void PORT5_IRQHandler(void) {
         // Check if is the origin of the interrupt
         if(status & port_5_columns[i][0]) {
             // Find triggering row
-            scan_rows(GPIO_PORT_P5, port_5_columns[i][0]);
+            scan_rows(GPIO_PORT_P5, port_5_columns[i][0], 1);
             restart_timer();
             break;
         }
@@ -103,7 +103,7 @@ void PORT6_IRQHandler(void) {
         // Check if is the origin of the interrupt
         if(status & port_6_columns[i][0]) {
             // Find triggering row
-            scan_rows(GPIO_PORT_P6, port_6_columns[i][0]);
+            scan_rows(GPIO_PORT_P6, port_6_columns[i][0], 1);
             restart_timer();
             break;
         }

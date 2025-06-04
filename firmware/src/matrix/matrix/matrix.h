@@ -9,7 +9,7 @@
     #include "../global/global.h"
 
     int8_t get_column_index(uint_fast16_t port, uint_fast16_t pin);
-    void scan_rows(uint_fast16_t port, uint_fast16_t pin);
+    void scan_rows(uint_fast16_t port, uint_fast16_t pin, uint_8 pressed);
 
 #endif // MATRIX_H
  
