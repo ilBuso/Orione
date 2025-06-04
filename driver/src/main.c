@@ -11,13 +11,15 @@
 #import "core/logging.c"
 #import "matrix/keycodes.h"
 #import "matrix/matrix.h"
+#import "global/global.h"
 
 static ProfileManager profile_manager;
 static RateLimiter rate_limiter;
 
 void key_event_callback(int x, int y, bool pressed);
 
-int main() {
+int main()
+{
     uart_init();
     input_device_init();
 
@@ -25,13 +27,24 @@ int main() {
 
     rate_limiter_init(&rate_limiter, 50, key_event_callback);
 
-    while (1) {
+    while (1)
+    {
         const Message* msg = receive_message();
+
+        // TODO: check rotary encoder key press instead of normal keyboard
 
         if (msg != NULL)
         {
-            // TODO: Figure out how we receive key press / release info
-            handle_key_press(&rate_limiter, msg->x.data, msg->y.data);
+            const bool pressed = check_pressed_flag(msg->info.data);
+
+            if (pressed)
+            {
+                handle_key_press(&rate_limiter, msg->x.data, msg->y.data);
+            }
+            else
+            {
+                handle_key_release(&rate_limiter, msg->x.data, msg->y.data);
+            }
         }
     }
 
@@ -41,7 +54,8 @@ int main() {
     uart_cleanup();
 }
 
-void key_event_callback(const int x, const int y, const bool pressed) {
+void key_event_callback(const int x, const int y, const bool pressed)
+{
     enum CrossPlatformKeyCode keycode = keyboard_matrix[x][y];
 
     const int new_profile = keypress_has_triggered_profile(&profile_manager, keycode);
