@@ -15,6 +15,8 @@
     // Includes
     // TI
     #include <ti/devices/msp432p4xx/driverlib/driverlib.h>
+    #include <ti/devices/msp432p4xx/driverlib/Timer32.h>
+    #include <stdio.h>
     #include "msp.h"
 
     // Libraries
@@ -23,6 +25,9 @@
 
     // Header files
     #include "../global/global.h"
+
+    // Timer interrupt handler
+    void T32_INT1_IRQHandler(void);
 
     // Port interrupt handlers
     void PORT2_IRQHandler(void);

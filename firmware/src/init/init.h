@@ -14,6 +14,7 @@
     // Includes
     // TI
     #include <ti/devices/msp432p4xx/driverlib/driverlib.h>
+    #include <ti/devices/msp432p4xx/driverlib/Timer32.h>
     #include "msp.h"
 
     /**

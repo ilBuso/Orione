@@ -3,7 +3,7 @@
  * @brief Implementation of initialization functions
  * @author Alessandro Busola
  * @date   March 2024
- * 
+ *
  * This file implements the initialization functions declared in init.h.
 */
 
@@ -67,6 +67,16 @@ void UART_init(void) {
 
 void interrupt_init(void) {
     Interrupt_disableMaster(); // Enable master interrupts
+
+    // Configura Timer32_1 in one-shot mode, prescaler 1
+    Timer32_initModule(TIMER32_1_BASE, TIMER32_PRESCALER_1, TIMER32_32BIT, TIMER32_PERIODIC_MODE);
+
+    // NON avviare il timer qui - verrà avviato solo alla pressione del pulsante
+    Timer32_haltTimer(TIMER32_1_BASE);  // Assicurati che sia fermo
+
+    // Enable interrupt on underflow of Timer32_1
+    Timer32_enableInterrupt(TIMER32_1_BASE);
+    Interrupt_enableInterrupt(INT_T32_INT2);  // INT_T32_INT2 for Timer32_1
 
     // Configure LOW to HIGH transition interrupts for COLUMNs
     GPIO_interruptEdgeSelect(GPIO_PORT_P1, GPIO_PIN6 | GPIO_PIN7, GPIO_HIGH_TO_LOW_TRANSITION);
