@@ -3,7 +3,7 @@
 //
 
 #pragma once
-#include "message.h"
+#include "../../message/message.h"
 
 // Initializes uart, needs to be implemented differently for each target OS
 // This function should set up the necessary hardware or software configurations

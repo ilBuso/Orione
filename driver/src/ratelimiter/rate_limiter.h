@@ -2,8 +2,8 @@
 
 #include <pthread.h>
 #include <time.h>
-#include <core/set/set.h>
-#include <core/hashmap/hashmap.h>
+#include "../core/set/set.h"
+#include "../core/hashmap/hashmap.h"
 
 /**
  * Callback type for key events.

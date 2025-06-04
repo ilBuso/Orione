@@ -1,8 +1,8 @@
 #pragma once
 
-#include <core/set/set.h>
+#include "../core/set/set.h"
 #include <stdint.h>
-#include "matrix/keycodes.h"
+#include "../matrix/keycodes.h"
 
 typedef struct
 {

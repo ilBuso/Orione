@@ -1,10 +1,10 @@
 #include "rate_limiter.h"
-#include "coordinates_helper.h"
+#include "../core/coordinates_helper.h"
 #include <stdlib.h>
 #include <unistd.h>
-#include <core/set/set.h>
+#include "../core/set/set.h"
 #include <stdbool.h>
-#include <_string.h>
+#include <string.h>
 
 void* process_keys_thread(void* arg) {
     RateLimiter* limiter = arg;

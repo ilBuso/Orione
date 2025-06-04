@@ -4,7 +4,8 @@
 
 #pragma once
 
-#include "matrix/keycodes.h"
+#include <stdbool.h>
+#include "../../matrix/keycodes.h"
 
 /**
  * Initializes the input device.

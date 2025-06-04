@@ -6,7 +6,7 @@
 
 #include <string.h>
 #include <stddef.h>
-#include "matrix/keycodes.h"
+#include "keycodes.h"
 
 // X-Macro definition of all key codes and their string representations
 #define KEYCODE_MAP(X) \

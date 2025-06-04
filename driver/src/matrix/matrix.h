@@ -4,7 +4,7 @@
 
 #pragma once
 #include <stddef.h>
-#include "matrix/keycodes.h"
+#include "keycodes.h"
 
 // Assuming CrossPlatformKeyCode enum is defined elsewhere
 // Creates a 6x17 matrix representing a standard US QWERTY keyboard layout
@@ -15,7 +15,7 @@ const enum CrossPlatformKeyCode keyboard_matrix[6][17] = {
     // Row 0: Function keys row
     {
         KEY_ESCAPE, KEY_F1, KEY_F2, KEY_F3, KEY_F4, KEY_F5, KEY_F6, KEY_F7, KEY_F8, KEY_F9, KEY_F10, KEY_F11, KEY_F12,
-        KEY_PRINT_SCREEN, KEY_SCROLL_LOCK, KEY_PAUSE, 0
+        KEY_PRINT_SCREEN, KEY_SCROLL_LOCK, KEY_PAUSE, KEY_MENU
     },
 
     // Row 1: Number row
@@ -33,18 +33,18 @@ const enum CrossPlatformKeyCode keyboard_matrix[6][17] = {
     // Row 3: ASDF row
     {
         KEY_CAPS_LOCK, KEY_A, KEY_S, KEY_D, KEY_F, KEY_G, KEY_H, KEY_J, KEY_K, KEY_L, KEY_SEMICOLON, KEY_APOSTROPHE,
-        KEY_ENTER, 0, 0, 0, 0
+        KEY_ENTER, KEY_MENU, KEY_MENU, KEY_MENU, KEY_MENU
     },
 
     // Row 4: ZXCV row
     {
-        KEY_SHIFT_LEFT, 0, KEY_Z, KEY_X, KEY_C, KEY_V, KEY_B, KEY_N, KEY_M, KEY_COMMA, KEY_PERIOD, KEY_SLASH,
-        KEY_SHIFT_RIGHT, 0, KEY_UP, 0, 0
+        KEY_SHIFT_LEFT, KEY_MENU, KEY_Z, KEY_X, KEY_C, KEY_V, KEY_B, KEY_N, KEY_M, KEY_COMMA, KEY_PERIOD, KEY_SLASH,
+        KEY_SHIFT_RIGHT, KEY_MENU, KEY_UP, KEY_MENU, KEY_MENU
     },
 
     // Row 5: Bottom row
     {
         KEY_CONTROL_LEFT, KEY_SUPER_LEFT, KEY_ALT_LEFT, KEY_SPACE, KEY_ALT_RIGHT, KEY_SUPER_RIGHT, KEY_MENU,
-        KEY_CONTROL_RIGHT, 0, 0, 0, 0, 0, KEY_LEFT, KEY_DOWN, KEY_RIGHT, 0
+        KEY_CONTROL_RIGHT, KEY_MENU, KEY_MENU, KEY_MENU, KEY_MENU, KEY_MENU, KEY_LEFT, KEY_DOWN, KEY_RIGHT, KEY_MENU
     }
 };

@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <core/io/uart.h>
+#include "../core/io/uart.h"
 
 // Global state tracking the current step in the communication protocol
 volatile Communication comm_step = INIT;

@@ -2,13 +2,13 @@
 // Created by Giulio Pimenoff Verdolin on 08/05/25.
 //
 
-#include <sys/_types/_null.h>
+//#include <sys/_types/_null.h>
 
-#include "profile_manager.h"
-#include "rate_limiter.h"
+#include "profile/profile_manager.h"
+#include "ratelimiter/rate_limiter.h"
 #include "core/io/uart.h"
 #include "core/io/input_device.h"
-#include "core/logging.c"
+#include "core/logging.h"
 #include "matrix/keycodes.h"
 #include "matrix/matrix.h"
 #include "global/global.h"

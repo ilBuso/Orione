@@ -2,9 +2,9 @@
 // Created by Giulio Pimenoff Verdolin on 08/05/25.
 //
 
-#include "core/io/input_device.h"
-#include "core/logging.c"
-#include "matrix/keycodes.h"
+#include "../../core/io/input_device.h"
+#include "../../core/logging.h"
+#include "../../matrix/keycodes.h"
 
 // TODO: Check libs needed (remove unnecessary)
 #include <stdio.h>
@@ -16,7 +16,7 @@
 #include <termios.h>
 #include <X11/keysym.h>
 
-KeySym convertToLinuxKeyCode(enum CrossPlatformKeyCode keyCode);
+int convertToLinuxKeyCode(enum CrossPlatformKeyCode keyCode);
 
 static int uinput_fd = -1;
 
@@ -65,7 +65,7 @@ int input_device_init()
 
 void input_device_send_key(const enum CrossPlatformKeyCode key_code, bool pressed)
 {
-    const KeySm key = convertToLinuxKeyCode(key_code);
+    const int key = convertToLinuxKeyCode(key_code);
 
     struct input_event ev = {};
     ev.type = EV_KEY;
@@ -99,8 +99,11 @@ void input_device_cleanup()
     LOG_DEBUG("Linux input device cleaned up");
 }
 
-KeySym convertToLinuxKeyCode(enum CrossPlatformKeyCode keyCode) {
+int convertToLinuxKeyCode(enum CrossPlatformKeyCode keyCode) {
     switch (keyCode) {
+
+        //TODO: mettere apposto perchè non capisce che sono le nostre macro
+
         // Alphabetic keys
         case KEY_A: return XK_a;
         case KEY_B: return XK_b;

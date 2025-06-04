@@ -2,6 +2,7 @@
 // Created by Giulio Pimenoff Verdolin on 08/05/25.
 //
 
+#pragma once
 #include <stdio.h>
 
 #if defined(LOG_LEVEL_DEBUG)

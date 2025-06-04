@@ -31,23 +31,9 @@ file(GLOB_RECURSE MESSAGE_SOURCES src/message/*.c)
 file(GLOB_RECURSE PROFILE_SOURCES src/profile/*.c)
 file(GLOB_RECURSE RATELIMITER_SOURCES src/ratelimiter/*.c)
 
-# Platform dependent sources
-# Can then use PLATFORM_{X} macro in source files
-if(APPLE)
-    file(GLOB_RECURSE PLATFORM_SOURCES platform/macos/*.c)
-    add_definitions(-DPLATFORM_MACOS)
-    include_directories(${CMAKE_SOURCE_DIR}/platform/macos)
-elseif(UNIX AND NOT APPLE)
-    file(GLOB_RECURSE PLATFORM_SOURCES platform/linux/*.c)
-    add_definitions(-DPLATFORM_LINUX)
-    include_directories(${CMAKE_SOURCE_DIR}/platform/linux)
-elseif(WIN32)
-    file(GLOB_RECURSE PLATFORM_SOURCES platform/windows/*.c)
-    add_definitions(-DPLATFORM_WINDOWS)
-    include_directories(${CMAKE_SOURCE_DIR}/platform/windows)
-else()
-    message(FATAL_ERROR "Unsupported platform")
-endif()
+file(GLOB_RECURSE PLATFORM_SOURCES platform/linux/*.c)
+add_definitions(-DPLATFORM_LINUX)
+include_directories(${CMAKE_SOURCE_DIR}/platform/linux)
 
 add_executable(driver
         src/main.c

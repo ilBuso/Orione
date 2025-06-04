@@ -1,8 +1,8 @@
 #include "profile_manager.h"
-#include "core/coordinates_helper.h"
-#include "matrix/keycode_conversion.c"
-#include <core/set/set.h>
-#include "matrix/matrix.h"
+#include "../core/coordinates_helper.h"
+#include "../matrix/keycode_conversion.h"
+#include "../core/set/set.h"
+#include "../matrix/matrix.h"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <time.h>
