@@ -82,5 +82,5 @@ endif()
 set(LINUX_SERIAL_PORT "/dev/ttyUSB0" CACHE STRING "Path to serial port device")
 target_compile_definitions(driver PRIVATE LINUX_SERIAL_PORT=\"${LINUX_SERIAL_PORT}\")
 
-set(MACOS_SERIAL_PORT "/dev/ttyUSB0" CACHE STRING "Path to serial port device")
+set(MACOS_SERIAL_PORT "/dev/cu.usbserial-FTDF92XE" CACHE STRING "Path to serial port device")
 target_compile_definitions(driver PRIVATE MACOS_SERIAL_PORT=\"${MACOS_SERIAL_PORT}\")

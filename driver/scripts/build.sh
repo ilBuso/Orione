@@ -1,5 +1,5 @@
 rm -rf ./build
-mkdir ./build
+mkdir -p ./build
 cd ./build
 cmake ..
-cmake --build .
+make driver

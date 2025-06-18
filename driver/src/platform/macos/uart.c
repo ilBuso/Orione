@@ -14,7 +14,7 @@
 #include "core/logging.h"
 
 #ifndef MACOS_SERIAL_PORT
-#define MACOS_SERIAL_PORT "/dev/cu.usbserial"
+#define MACOS_SERIAL_PORT "/dev/cu.usbserial-FTDF92XE"
 #endif
 
 static int serial_fd = -1;
@@ -23,10 +23,11 @@ static IOHIDManagerRef hidManager = NULL;
 int uart_init()
 {
     const char* serialPort = MACOS_SERIAL_PORT;
+    LOG_DEBUG("Initializing UART serial port %s\n", serialPort);
     const int baudRate = B115200;
 
     // Open the UART device
-    serial_fd = open(serialPort, O_RDWR | O_NOCTTY | O_SYNC);
+    serial_fd = open(serialPort, O_RDWR | O_NOCTTY);
     if (serial_fd < 0)
     {
         LOG_ERROR("Error opening serial port");
@@ -41,6 +42,7 @@ int uart_init()
         close(serial_fd);
         return EXIT_FAILURE;
     }
+    LOG_DEBUG("Got terminal attributes");
     cfsetospeed(&tty, baudRate);
     cfsetispeed(&tty, baudRate);
     tty.c_cflag = (tty.c_cflag & ~CSIZE) | CS8; // 8-bit chars

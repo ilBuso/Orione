@@ -5,6 +5,7 @@
 #include "../core/set/set.h"
 #include <stdbool.h>
 #include <string.h>
+#include "logging.h"
 
 void* process_keys_thread(void* arg) {
     RateLimiter* limiter = arg;
@@ -120,6 +121,8 @@ void rate_limiter_destroy(RateLimiter* limiter) {
 }
 
 void handle_key_press(RateLimiter* limiter, const int x, const int y) {
+    LOG_DEBUG("Handling key press %d %d", x, y);
+
     char coord_str[32];
     coord_to_string(coord_str, x, y);
 
@@ -145,6 +148,8 @@ void handle_key_press(RateLimiter* limiter, const int x, const int y) {
 }
 
 void handle_key_release(RateLimiter* limiter, const int x, const int y) {
+    LOG_DEBUG("Handling key release %d %d", x, y);
+
     char coord_str[32];
     coord_to_string(coord_str, x, y);
 
