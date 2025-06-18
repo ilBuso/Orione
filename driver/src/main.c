@@ -8,7 +8,6 @@
 #include "ratelimiter/rate_limiter.h"
 #include "core/io/uart.h"
 #include "core/io/input_device.h"
-#include "core/logging.h"
 #include "matrix/keycodes.h"
 #include "matrix/matrix.h"
 #include "global/global.h"

@@ -11,7 +11,7 @@
 #include <IOKit/hid/IOHIDManager.h>
 
 #include "core/io/uart.h"
-#include "core/logging.c"
+#include "core/logging.h"
 
 #ifndef MACOS_SERIAL_PORT
 #define MACOS_SERIAL_PORT "/dev/cu.usbserial"
@@ -60,6 +60,19 @@ int uart_init()
     LOG_DEBUG("macOS uart initialized");
 
     return EXIT_SUCCESS;
+}
+
+
+uint8_t uart_read_byte()
+{
+    unsigned char buffer[1];
+    ssize_t bytes_read = read(serial_fd, buffer, sizeof(buffer));
+
+    if (bytes_read > 0) {
+        return buffer[0];
+    } else {
+        return 255;
+    }
 }
 
 // Function to clean up resources

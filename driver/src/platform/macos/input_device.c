@@ -3,7 +3,7 @@
 //
 
 #include "core/io/input_device.h"
-#include "core/logging.c"
+#include "core/logging.h"
 #include "matrix/keycodes.h"
 
 #include <_stdlib.h>
@@ -20,6 +20,11 @@ void input_device_cleanup()
 {
     // nothing to do
     LOG_DEBUG("macOS input device cleaned up");
+}
+
+void input_device_send_key(const enum CrossPlatformKeyCode key_code, bool pressed)
+{
+    LOG_DEBUG("macOS input device sending key %d with pressed %d", key_code, pressed);
 }
 
 CGKeyCode convertToMacOSKeyCode(enum CrossPlatformKeyCode keyCode) {

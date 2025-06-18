@@ -11,7 +11,7 @@
  * @param info
  * @return true if pressed, false if released
  */
-inline bool check_pressed_flag(uint8_t info) {
+static bool check_pressed_flag(uint8_t info) {
     return (info & 0x01) != 0;
 }
 

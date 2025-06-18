@@ -1,8 +1,6 @@
 #include "profile_manager.h"
-#include "../core/coordinates_helper.h"
 #include "../matrix/keycode_conversion.h"
 #include "../core/set/set.h"
-#include "../matrix/matrix.h"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <time.h>
@@ -79,7 +77,6 @@ int keypress_has_triggered_profile(ProfileManager* manager, const enum CrossPlat
       uint64_t size = set_length(&manager->modifiers_combination);
       char** array = set_to_array(&manager->modifiers_combination, &size);
 
-      bool valid = true;
       int modifiers_count = 0;
       int profile_number = -1;
       for (int i = 0; i < size; i++) {
