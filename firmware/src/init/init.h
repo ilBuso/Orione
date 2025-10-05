@@ -4,6 +4,7 @@
     #include "pico/stdlib.h"
 
     #include "../matrix/matrix.h"
+    #include "../global.h"
     #include "../rotary_encoder/rotary_encoder.h"
     #include "../interrupts/interrupts.h"
 
@@ -14,5 +15,6 @@
     void init_rotary_encoder_gpio(void);
     void init_keyboard_interrupts(void);
     void init_rotary_encoder_interrupts(void);
+    void init_led(void);
 
 #endif /* INIT_H */

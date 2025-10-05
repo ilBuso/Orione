@@ -95,11 +95,13 @@ void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_
 
             if (kbd_leds & KEYBOARD_LED_CAPSLOCK) {
                 // Capslock On: disable blink, turn led on
-                blink_interval_ms = 0;
+                blink_interval_ms = 100;
+                gpio_put(CAPS_LOCK_LED, HIGH);
                 board_led_write(true);
             } else {
                 // Caplocks Off: back to normal blink
                 board_led_write(false);
+                gpio_put(CAPS_LOCK_LED, LOW);
                 blink_interval_ms = BLINK_MOUNTED;
             }
         }

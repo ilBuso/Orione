@@ -33,12 +33,18 @@ void build_keycode_array(uint8_t* modifier, uint8_t* keycode) {
     for (uint8_t i = 0; i < kbd_state.pressed_keys_count && key_idx < 6; i++) {
         uint8_t row = kbd_state.pressed_keys[i][0];
         uint8_t col = kbd_state.pressed_keys[i][1];
-        uint8_t hid_key = map_key_to_hid(row, col);
+        
+        // Skip the Fn key itself - non inviarlo come tasto
+        if (row == FN_KEY_ROW && col == FN_KEY_COL) {
+            continue;
+        }
+        
+        // Passa il layer corrente alla funzione
+        uint8_t hid_key = map_key_to_hid(row, col, kbd_state.current_layer);
         
         if (hid_key != 0) {
             // Check if it's a modifier key
             if (hid_key >= HID_KEY_CONTROL_LEFT && hid_key <= HID_KEY_GUI_RIGHT) {
-                // It's a modifier
                 *modifier |= (1 << (hid_key - HID_KEY_CONTROL_LEFT));
             } else {
                 // Regular key

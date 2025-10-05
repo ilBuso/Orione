@@ -6,6 +6,7 @@
         volatile bool has_new_key;
         volatile uint8_t pressed_keys_count;
         volatile uint8_t pressed_keys[MAX_KEYS][2]; // [row, column] pairs
+        volatile uint8_t current_layer;
     } keyboard_state_t;
 
     #define ROW_0 0
@@ -28,5 +29,8 @@
     #define COLUMN_11 16
     #define COLUMN_12 17
     #define COLUMN_13 18
+
+    #define FN_KEY_ROW 4
+    #define FN_KEY_COL 9
 
 #endif /* MATRIX_H */

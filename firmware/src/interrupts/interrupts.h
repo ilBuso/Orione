@@ -8,7 +8,9 @@
     #include "../global.h"
     #include "../rotary_encoder/rotary_encoder.h"
 
-    #define DEBOUNCE_TIME_US 50000
+    #define MATRIX_DEBOUNCE_TIME 15000
+    #define ENCODER_CLK_DEBOUNCE_TIME 500
+    #define ENCODER_BTN_DEBOUNCE_TIME 15000
 
     void gpio_callback(uint gpio, uint32_t events);
 

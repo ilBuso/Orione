@@ -26,7 +26,7 @@ void keyboard_callback(uint gpio, uint32_t events) {
     
     // Debounce check
     if (column < 14) {
-        if (current_time - last_interrupt_time[column] < DEBOUNCE_TIME_US) {
+        if (current_time - last_interrupt_time[column] < MATRIX_DEBOUNCE_TIME) {
             return;
         }
         last_interrupt_time[column] = current_time;
@@ -64,18 +64,42 @@ void keyboard_callback(uint gpio, uint32_t events) {
         gpio_put(ROW_4, HIGH);
         
         if (row != 0xFF) {
-            keyboard_add_key(row, column);
+            if (row == FN_KEY_ROW && column == FN_KEY_COL) {
+                kbd_state.current_layer = 1;
+            } else {
+                keyboard_add_key(row, column);
+            }
         }
     } else {
-        // Key release - we need to find which key in this column was pressed
-        // We can't scan for it, so we search our pressed keys list
+        // Key release
+        // First check if this is the Fn key being released
+        bool fn_key_released = false;
+        
+        // We need to scan to find which row this column was on
+        uint8_t row = 0xFF;
         for (uint8_t i = 0; i < kbd_state.pressed_keys_count; i++) {
             if (kbd_state.pressed_keys[i][1] == column) {
-                // Found a key in this column, remove it
-                uint8_t row = kbd_state.pressed_keys[i][0];
-                keyboard_remove_key(row, column);
-                break; // Assume only one key per column (single key press)
+                row = kbd_state.pressed_keys[i][0];
+                break;
             }
+        }
+        
+        // If we didn't find it in pressed_keys, it might be the Fn key
+        if (row == 0xFF && kbd_state.current_layer == 1) {
+            // Assume it's the Fn key being released
+            kbd_state.current_layer = 0;
+            fn_key_released = true;
+        }
+        
+        // Check explicitly if Fn key position matches
+        if (row == FN_KEY_ROW && column == FN_KEY_COL) {
+            kbd_state.current_layer = 0;  // Back to base layer
+            fn_key_released = true;
+        }
+        
+        // Remove the key from pressed list (if it's not Fn)
+        if (!fn_key_released && row != 0xFF) {
+            keyboard_remove_key(row, column);
         }
     }
 }
@@ -85,10 +109,13 @@ void rotary_clk_callback(uint gpio, uint32_t events) {
     uint32_t current_time = time_us_32();
     
     // Debounce
-    if (current_time - last_encoder_time < ENCODER_DEBOUNCE_US) {
+    if (current_time - last_encoder_time < ENCODER_CLK_DEBOUNCE_TIME) {
         return;
     }
     last_encoder_time = current_time;
+
+    // Read current stable state with a small delay
+    busy_wait_us(100);  // Wait for signal to stabilize
     
     // Read current state
     uint8_t clk_state = gpio_get(ROTARY_CLK);
@@ -114,7 +141,7 @@ void rotary_button_callback(uint gpio, uint32_t events) {
     uint32_t current_time = time_us_32();
     
     // Debounce
-    if (current_time - last_button_time < BUTTON_DEBOUNCE_US) {
+    if (current_time - last_button_time < ENCODER_BTN_DEBOUNCE_TIME) {
         return;
     }
     last_button_time = current_time;

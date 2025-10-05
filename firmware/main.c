@@ -18,7 +18,11 @@
 // VARIABLES
 //--------------------------------------------------------------------+
 uint32_t blink_interval_ms = BLINK_NOT_MOUNTED;
-keyboard_state_t kbd_state = {0};
+keyboard_state_t kbd_state = {
+    .has_new_key = false,
+    .pressed_keys_count = 0,
+    .current_layer = 0
+};
 
 //--------------------------------------------------------------------+
 // FUNCTIONS
@@ -95,8 +99,11 @@ void hid_task(void) {
 void init(void) {
     init_keyboard_gpio();
     init_keyboard_interrupts();
+    
     init_rotary_encoder_gpio();
     init_rotary_encoder_interrupts();
+
+    init_led();
 }
 
 //--------------------------------------------------------------------+

@@ -8,6 +8,8 @@
     };
 
     #define HIGH 1
-    #define LOW 0  
+    #define LOW 0 
+    
+    #define CAPS_LOCK_LED 22
 
 #endif

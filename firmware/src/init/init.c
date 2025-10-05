@@ -125,3 +125,9 @@ void init_rotary_encoder_interrupts(void) {
     // Set up interrupts for CLK (both edges for better detection)
     gpio_set_irq_enabled(ROTARY_CLK, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true);
 }
+
+void init_led(void) {
+    gpio_init(CAPS_LOCK_LED);
+    gpio_set_dir(CAPS_LOCK_LED, GPIO_OUT);
+    gpio_put(CAPS_LOCK_LED, LOW);
+}

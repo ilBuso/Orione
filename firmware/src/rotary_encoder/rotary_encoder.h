@@ -11,9 +11,6 @@
     #define ROTARY_DT 20     // DT pin (B)
     #define ROTARY_SW 21     // Switch pin (button)
 
-    #define ENCODER_DEBOUNCE_US 5000
-    #define BUTTON_DEBOUNCE_US 50000
-
     // Rotary encoder state
     typedef struct {
         volatile int8_t direction;     // -1 for CCW, 1 for CW, 0 for no change
