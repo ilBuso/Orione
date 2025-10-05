@@ -10,6 +10,7 @@ A custom 60% mechanical keyboard powered by Raspberry Pi Pico with fully customi
   - [Hardware](#hardware)
   - [Software](#software)
 - [PCB](#pcb)
+- [Chassis](#chassis)
 - [Project layout](#project-layout)
 - [Video and Presentation](#video-and-presentation)
 - [Team Members](#team-members)
@@ -56,17 +57,19 @@ One of Orione's key features is its fully customizable firmware. You can modify 
 
 - **Development Environment**: VS Code
 - **KiCad** - PCB schematics and layout design
-- **Blender** - 3D modeling for case and components
-
+- **Blender** - 3D modeling for case and components  
+  
 - **SDK**: Raspberry Pi Pico C/C++ SDK (follow the official Getting Started guide)
 - **TinyUSB Library**: Used to enable USB HID communication between the Pico and computer via the micro USB port
 
 ## PCB
 
+## Chassis
+
 ## Project layout
 
 ```
-C:.
+/
 ├───datasheets
 |   └───...
 ├───firmware
@@ -95,9 +98,11 @@ C:.
 │           └───usb_descriptors
 │              ├───usb_descriptors.h
 │              └───usb_descriptors.c
-└───pcb
-    └───orione-v2
-        └───...
+├───pcb
+│    └───orione-v2
+│        └───...
+└───chassis
+    └───...
 ```
 
 ## Video and Presentation
