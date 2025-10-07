@@ -1,3 +1,11 @@
+/**
+ * @file interrupts.h
+ * @brief GPIO interrupt handler declarations
+ * 
+ * Callback function prototypes for handling keyboard matrix scanning,
+ * rotary encoder rotation detection, and button press interrupts.
+ */
+
 #ifndef INTERRUPTS_H
 #define INTERRUPTS_H
 

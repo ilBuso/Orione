@@ -1,9 +1,18 @@
+/**
+ * @file usb_callbacks.c
+ * @brief USB HID callback implementation
+ * 
+ * Implements TinyUSB callbacks for USB device lifecycle management and
+ * HID report handling. Manages LED status indicators (Caps Lock) and
+ * adjusts LED blink patterns based on USB connection state.
+ */
+
 #include "usb_callbacks.h"
+
+//--------------------------------------------------------------------+
 
 extern uint32_t blink_interval_ms;
 
-//--------------------------------------------------------------------+
-// DEVICE CALLBACKS
 //--------------------------------------------------------------------+
 
 // Invoked when device is mounted
@@ -29,8 +38,6 @@ void tud_resume_cb(void) {
     blink_interval_ms = tud_mounted() ? BLINK_MOUNTED : BLINK_NOT_MOUNTED;
 }
 
-//--------------------------------------------------------------------+
-// USB HID
 //--------------------------------------------------------------------+
 
 void send_hid_report(uint8_t report_id, uint16_t consumer_code) {

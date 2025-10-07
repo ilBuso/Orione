@@ -1,11 +1,20 @@
+/**
+ * @file scan_rows.h
+ * @brief Matrix scanning function declarations
+ * 
+ * Functions for scanning keyboard matrix rows, managing the pressed keys
+ * tracking list, and building HID report arrays with modifier keys.
+ */
+
 #ifndef SCAN_ROWS_H
 #define SCAN_ROWS_H
 
     #include "pico/stdlib.h"
+    #include <class/hid/hid.h>
+
     #include "../matrix.h"
     #include "../../global.h"
     #include "../keymap/keymap.h"
-    #include <class/hid/hid.h>
 
     uint8_t scan_rows(uint gpio);
     void keyboard_add_key(uint8_t row, uint8_t col);

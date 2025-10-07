@@ -1,9 +1,16 @@
+/**
+ * @file usb_callbacks.h
+ * @brief USB HID callback function declarations
+ * 
+ * TinyUSB callback prototypes for device lifecycle events (mount, unmount,
+ * suspend, resume) and HID report transmission/reception.
+ */
+
 #ifndef USB_CALLBACKS_H
 #define USB_CALLBACKS_H
 
     #include "bsp/board_api.h"
     #include "tusb.h"
-
     #include <class/hid/hid.h>
     
     #include "../usb_descriptors/usb_descriptors.h"

@@ -1,9 +1,17 @@
+/**
+ * @file rotary_encoder.h
+ * @brief Rotary encoder definitions and state structure
+ * 
+ * Pin definitions, debounce timing constants, and state structure for
+ * KY-040 rotary encoder module with integrated push button.
+ */
+
 #ifndef ROTARY_ENCODER_H
 #define ROTARY_ENCODER_H
 
     #include <stdint.h>
     #include <stdbool.h>
-
+    
     #include "pico/stdlib.h"
     #include "hardware/sync.h"
     

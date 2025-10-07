@@ -1,3 +1,11 @@
+/**
+ * @file init.h
+ * @brief Hardware initialization function declarations
+ * 
+ * Function prototypes for initializing GPIO pins and interrupts for
+ * keyboard matrix, rotary encoder, and status LEDs.
+ */
+
 #ifndef INIT_H
 #define INIT_H
 

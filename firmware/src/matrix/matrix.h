@@ -1,7 +1,16 @@
+/**
+ * @file matrix.h
+ * @brief Keyboard matrix definitions and state structure
+ * 
+ * Defines GPIO pin mappings for keyboard matrix rows and columns,
+ * keyboard state tracking structure, and layer management constants.
+ */
+
 #ifndef MATRIX_H
 #define MATRIX_H
 
-    #define MAX_KEYS 6
+    #define MAX_KEYS 6 // max number of key pressed at the same time
+
     typedef struct {
         volatile bool has_new_key;
         volatile uint8_t pressed_keys_count;

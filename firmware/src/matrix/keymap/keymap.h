@@ -1,3 +1,11 @@
+/**
+ * @file keymap.h
+ * @brief Keyboard layout definitions
+ * 
+ * Defines key mappings for base and Fn layers, translating physical
+ * matrix positions (row, column) to HID keycodes. Includes Fn key location.
+ */
+
 #ifndef KEYMAP_H
 #define KEYMAP_H
 
