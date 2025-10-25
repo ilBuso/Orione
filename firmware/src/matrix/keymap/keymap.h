@@ -25,17 +25,17 @@
     };
 
     static const uint8_t fn_keymap[5][14] = {
-    // Row 0
-    {0, HID_KEY_F1, HID_KEY_F2, HID_KEY_F3, HID_KEY_F4, HID_KEY_F5, HID_KEY_F6, HID_KEY_F7, HID_KEY_F8, HID_KEY_F9, HID_KEY_F10, HID_KEY_F11, HID_KEY_F12, 0},
-    // Row 1
-    {0, HID_KEY_9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    // Row 2
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    // Row 3
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, HID_KEY_ALT_RIGHT, 0, 0, 0, 0},
-    // Row 4
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-};
+        // Row 0
+        {0, HID_KEY_F1, HID_KEY_F2, HID_KEY_F3, HID_KEY_F4, HID_KEY_F5, HID_KEY_F6, HID_KEY_F7, HID_KEY_F8, HID_KEY_F9, HID_KEY_F10, HID_KEY_F11, HID_KEY_F12, 0},
+        // Row 1
+        {0, HID_KEY_9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        // Row 2
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+        // Row 3
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, HID_KEY_ALT_RIGHT, 0, 0, 0, 0},
+        // Row 4
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+    };
     uint8_t map_key_to_hid(uint8_t row, uint8_t col, uint8_t layer);
 
 #endif /* KEYMAP_H */
