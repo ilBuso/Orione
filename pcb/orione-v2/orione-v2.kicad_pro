@@ -488,7 +488,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "plot": "",
+      "plot": "greber/",
       "pos_files": "",
       "specctra_dsn": "",
       "step": "",
