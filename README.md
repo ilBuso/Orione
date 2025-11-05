@@ -97,8 +97,7 @@ On the firmware side, the project uses the **Raspberry Pi Pico C/C++ SDK**, foll
 │              ├───usb_descriptors.h
 │              └───usb_descriptors.c
 ├───pcb
-│    └───orione-v2
-│        └───...
+│   └───...
 └───chassis
     └───...
 ```
