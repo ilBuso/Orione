@@ -1,10 +1,13 @@
 /**
  * @file interrupts.c
  * @brief GPIO interrupt handler implementation
- * 
- * Implements interrupt service routines with debouncing for keyboard matrix
- * key detection, rotary encoder direction sensing, and Fn layer switching.
- * Handles both key press and release events with proper state management.
+ *
+ * Implements interrupt service routines for keyboard matrix key detection,
+ * rotary encoder direction sensing, and Fn layer switching. For the keyboard
+ * matrix, IRQs now schedule a one-shot debounce alarm per column to sample
+ * the stable pin state after a short delay (see `MATRIX_DEBOUNCE_TIME`).
+ * The alarm callback (`column_debounce_alarm`) performs the actual row scan
+ * and press/release handling to avoid transient bounce-related mis-detections.
  */
 
 #include "interrupts.h"
@@ -31,11 +34,14 @@ static int64_t column_debounce_alarm(alarm_id_t id, void *user_data);
 
 /**
  * @brief Keyboard matrix interrupt callback
- * 
- * Handles GPIO interrupts from column pins to detect key presses and releases.
- * Implements debouncing, row scanning to identify which key was pressed,
- * and special handling for the Fn layer key.
- * 
+ *
+ * This callback is invoked directly from GPIO IRQs for column pins. Instead of
+ * making an immediate press/release decision inside the IRQ (which is
+ * vulnerable to switch bounce), the callback schedules a one-shot alarm to
+ * run after `MATRIX_DEBOUNCE_TIME` microseconds. The alarm samples the
+ * stabilized column level and performs the row scan and key add/remove
+ * operations inside `column_debounce_alarm`.
+ *
  * @param gpio GPIO pin number that triggered the interrupt
  * @param events Interrupt event flags (EDGE_RISE or EDGE_FALL)
  */
@@ -58,8 +64,16 @@ void keyboard_callback(uint gpio, uint32_t events) {
 /**
  * @brief Alarm callback to process stabilized column state after debounce
  *
- * Reads the stable state of the column GPIO after the debounce timeout and
- * performs the appropriate press/release handling (row scan, add/remove key).
+ * This alarm callback executes after `MATRIX_DEBOUNCE_TIME` microseconds and
+ * reads the column pin once to decide whether the column is stably HIGH
+ * (pressed) or LOW (released). It performs a row scan when pressed and
+ * updates `kbd_state` by calling `keyboard_add_key` or `keyboard_remove_key`.
+ * The alarm is one-shot; its id is cleared in `column_alarm_id` before
+ * performing state updates.
+ *
+ * @param id Alarm identifier for this callback invocation
+ * @param user_data The column index (0..13) passed when scheduling the alarm
+ * @return 0 (one-shot)
  */
 static int64_t column_debounce_alarm(alarm_id_t id, void *user_data) {
     uint32_t col = (uintptr_t)user_data;
