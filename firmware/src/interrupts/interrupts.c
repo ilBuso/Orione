@@ -12,6 +12,8 @@
 //--------------------------------------------------------------------+
 
 static uint32_t last_interrupt_time[14] = {0};
+// Alarm ids for per-column debounce timers (0 == none)
+static alarm_id_t column_alarm_id[14] = {0};
 extern keyboard_state_t kbd_state;
 
 extern uint32_t last_encoder_time;
@@ -21,6 +23,9 @@ extern rotary_encoder_state_t rotary_state;
 
 extern void keyboard_add_key(uint8_t row, uint8_t col);
 extern void keyboard_remove_key(uint8_t row, uint8_t col);
+
+// forward declaration for debounce alarm callback
+static int64_t column_debounce_alarm(alarm_id_t id, void *user_data);
 
 //--------------------------------------------------------------------+
 
@@ -35,92 +40,80 @@ extern void keyboard_remove_key(uint8_t row, uint8_t col);
  * @param events Interrupt event flags (EDGE_RISE or EDGE_FALL)
  */
 void keyboard_callback(uint gpio, uint32_t events) {
-    uint32_t current_time = time_us_32();
+    // Defer stabilized state evaluation via alarm to avoid missed edges
     uint8_t column = gpio - COLUMN_0;
-    
-    // Debounce check
-    if (column < 14) {
-        if (current_time - last_interrupt_time[column] < MATRIX_DEBOUNCE_TIME) {
-            return;
-        }
-        last_interrupt_time[column] = current_time;
-    }
-    
-    // validate the column number
-    if (column >= 14) return;
-    
-    // determine if this is a press (rising edge) or release (falling edge)
-    bool is_press = (events & GPIO_IRQ_EDGE_RISE);
-    
-    if (is_press) {
-        uint8_t row = 0xFF;
 
-        // iterate on every row to find the right one
-        for (uint8_t r = 0; r < 5; r++) {
-            gpio_put(ROW_0, (r == 0) ? HIGH : LOW);
-            gpio_put(ROW_1, (r == 1) ? HIGH : LOW);
-            gpio_put(ROW_2, (r == 2) ? HIGH : LOW);
-            gpio_put(ROW_3, (r == 3) ? HIGH : LOW);
-            gpio_put(ROW_4, (r == 4) ? HIGH : LOW);
-            
-            // Wait for signal to stabilize
-            busy_wait_us(10);
-            
-            // if column reads HIGH, this is the active row
-            if (gpio_get(gpio) == HIGH) {
-                row = r;
-                break;
-            }
-        }
-        
-        // Restore all rows to HIGH
+    if (column >= 14) return;
+
+    // If a debounce alarm already scheduled for this column, ignore extra IRQs
+    if (column_alarm_id[column] != 0) return;
+
+    alarm_id_t aid = add_alarm_in_us(MATRIX_DEBOUNCE_TIME, column_debounce_alarm, (void*)(uintptr_t)column, true);
+    if (aid >= 0) {
+        column_alarm_id[column] = aid;
+    }
+}
+
+
+/**
+ * @brief Alarm callback to process stabilized column state after debounce
+ *
+ * Reads the stable state of the column GPIO after the debounce timeout and
+ * performs the appropriate press/release handling (row scan, add/remove key).
+ */
+static int64_t column_debounce_alarm(alarm_id_t id, void *user_data) {
+    uint32_t col = (uintptr_t)user_data;
+    if (col >= 14) return 0;
+
+    // clear stored alarm id
+    column_alarm_id[col] = 0;
+
+    uint gpio_pin = COLUMN_0 + col;
+    bool stable_high = (gpio_get(gpio_pin) == HIGH);
+
+    if (stable_high) {
+        uint8_t row = scan_rows(gpio_pin);
+
+        // restore idle state of rows
         gpio_put(ROW_0, HIGH);
         gpio_put(ROW_1, HIGH);
         gpio_put(ROW_2, HIGH);
         gpio_put(ROW_3, HIGH);
         gpio_put(ROW_4, HIGH);
-        
+
         if (row != 0xFF) {
-            // check if this is the Fn key
-            if (row == FN_KEY_ROW && column == FN_KEY_COL) {
-                // activate fn layer
+            if (row == FN_KEY_ROW && col == FN_KEY_COL) {
                 kbd_state.current_layer = 1;
             } else {
-                // normal key
-                keyboard_add_key(row, column);
+                keyboard_add_key(row, col);
             }
         }
     } else {
-        // key release check
         bool fn_key_released = false;
-        
-        // find which row this column corresponds to by searching pressed keys
         uint8_t row = 0xFF;
         for (uint8_t i = 0; i < kbd_state.pressed_keys_count; i++) {
-            if (kbd_state.pressed_keys[i][1] == column) {
+            if (kbd_state.pressed_keys[i][1] == col) {
                 row = kbd_state.pressed_keys[i][0];
                 break;
             }
         }
-        
-        // if not found in pressed_keys and layer is 1, assume it's Fn being released
+
         if (row == 0xFF && kbd_state.current_layer == 1) {
-            // Assume it's the Fn key being released
             kbd_state.current_layer = 0;
             fn_key_released = true;
         }
-        
-        // explicit check if this is the Fn key position
-        if (row == FN_KEY_ROW && column == FN_KEY_COL) {
-            kbd_state.current_layer = 0;  // Back to base layer
+
+        if (row == FN_KEY_ROW && col == FN_KEY_COL) {
+            kbd_state.current_layer = 0;
             fn_key_released = true;
         }
-        
-        // remove the key from pressed list
+
         if (!fn_key_released && row != 0xFF) {
-            keyboard_remove_key(row, column);
+            keyboard_remove_key(row, col);
         }
     }
+
+    return 0; // one-shot
 }
 
 /**
