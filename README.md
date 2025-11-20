@@ -46,7 +46,7 @@ Start by editing the keymap configuration files to match your preferences. Once 
 
 ### Hardware Components
 
-Building Orione requires a carefully selected set of components. You'll need a **Raspberry Pi Pico** as the microcontroller, it's the brain of the operation. The **rotary encoder** provides that tactile volume control I was after, while a **220Ω resistor** limits current to the **LED** that serves as the Caps Lock indicator.
+Building Orione requires a carefully selected set of components. You'll need a **Raspberry Pi Pico** as the microcontroller, it's the brain of the operation. The **rotary encoder** provides that tactile volume control I was after, while a **LED** serves as the Caps Lock indicator.s
 
 For the switches, you'll need **62 mechanical switches** total. You'll also need a matching set of **62 keycaps** and **62 diodes** for the key matrix.
 
