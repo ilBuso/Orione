@@ -106,7 +106,7 @@ On the firmware side, the project uses the **Raspberry Pi Pico C/C++ SDK**, foll
 
 [Video]()
 
-[Presentation]()
+[Presentation](assets/Orione.pdf)
 
 ## The Team
 
