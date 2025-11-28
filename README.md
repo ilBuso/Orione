@@ -60,9 +60,11 @@ On the firmware side, the project uses the **Raspberry Pi Pico C/C++ SDK**, foll
 
 ## The PCB
 
-![alt text](assets/pcb.png)
+![PCB](assets/pcb.png)
 
 ## The Chassis
+
+![Chassis](assets/chassis.jpg)
 
 ## Project layout
 
