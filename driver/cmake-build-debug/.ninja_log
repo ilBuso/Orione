@@ -1,0 +1,17 @@
+# ninja log v6
+3	65	1750256094706165314	CMakeFiles/driver.dir/src/profile/profile_manager.c.o	3c2e890e4fe5dde4
+0	36	1750257304077184774	build.ninja	ebb64ff505cf1f1c
+2	55	1750256094704848160	CMakeFiles/driver.dir/src/main.c.o	d94d68ecf4760e9f
+4	97	1750256094706559227	CMakeFiles/driver.dir/src/platform/macos/uart.c.o	9dd684e2a4725647
+2	69	1750256094705337239	CMakeFiles/driver.dir/src/core/hashmap/hashmap.c.o	4893f37e2bb2c715
+2	61	1750256094705534529	CMakeFiles/driver.dir/src/core/set/set.c.o	9fc502a293220754
+3	53	1750256094705965483	CMakeFiles/driver.dir/src/message/message.c.o	3ec1d285647517ad
+3	217	1750256094706440270	CMakeFiles/driver.dir/src/platform/macos/input_device.c.o	5731340c248f847d
+3	59	1750256094706305105	CMakeFiles/driver.dir/src/ratelimiter/rate_limiter.c.o	68d217ec4a4d95e8
+2	49	1750256094705206157	CMakeFiles/driver.dir/src/core/coordinates_helper.c.o	ff5cd8cca602c960
+218	257	1750256094920585578	bin/driver	ab6b0c8337f86497
+5	51	1750257577446031679	CMakeFiles/driver.dir/src/main.c.o	d94d68ecf4760e9f
+6	85	1750257577446558596	CMakeFiles/driver.dir/src/platform/macos/uart.c.o	9dd684e2a4725647
+85	124	1750257577525796544	bin/driver	ab6b0c8337f86497
+4	69	1750257592084319889	CMakeFiles/driver.dir/src/platform/macos/uart.c.o	9dd684e2a4725647
+69	106	1750257592148824706	bin/driver	ab6b0c8337f86497

@@ -48,12 +48,14 @@ int8_t get_column_index(uint_fast16_t port, uint_fast16_t pin) {
 }
 
 void scan_rows(uint_fast16_t port, uint_fast16_t pin, uint8_t pressed) {
+    printf("port: %d, pin: %d, pressed: %d\n ", port, pin, pressed);
+
     // Get column index for the triggered pin
     int8_t column = get_column_index(port, pin);
     if (column < 0) {
         return;
     }
-    
+
     // Disable interrupts for PORT.PIN
     GPIO_disableInterrupt(port, pin);
     
@@ -80,7 +82,7 @@ void scan_rows(uint_fast16_t port, uint_fast16_t pin, uint8_t pressed) {
             Fragment* info_ptr = new_fragment(INFO, pressed);
 
             // debug
-            printf("port: %d, pin: %d\n ", port, pin);
+
 
             // Check for memory allocation failures
             if (x_ptr == NULL || y_ptr == NULL || info_ptr == NULL) {
@@ -113,9 +115,9 @@ void scan_rows(uint_fast16_t port, uint_fast16_t pin, uint8_t pressed) {
                 
                 // Send the message
                 if (send_message(msg)) {
-                    // Message sent successfully
+                    printf("message sent\n");
                 } else {
-                    // Failed to send message
+                    printf("failed to send message\n");
                 }
             }
             break;
