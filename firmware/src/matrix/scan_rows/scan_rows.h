@@ -12,6 +12,9 @@
     #include "pico/stdlib.h"
     #include <class/hid/hid.h>
 
+    #include "src/usb/usb_descriptors/usb_descriptors.h"
+    #include "src/usb/usb_callbacks/usb_callbacks.h"
+
     #include "../matrix.h"
     #include "../../global.h"
     #include "../keymap/keymap.h"

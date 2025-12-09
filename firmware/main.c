@@ -106,12 +106,18 @@ void hid_task(void) {
                 if (button_pressed) {
                     // mute/unmute
                     send_hid_report(REPORT_ID_CONSUMER_CONTROL, HID_USAGE_CONSUMER_MUTE);
+                    sleep_ms(10);
+                    send_hid_report(REPORT_ID_CONSUMER_CONTROL, 0);
                 } else if (direction > 0) {
                     // volume up
                     send_hid_report(REPORT_ID_CONSUMER_CONTROL, HID_USAGE_CONSUMER_VOLUME_INCREMENT);
+                    sleep_ms(10);
+                    send_hid_report(REPORT_ID_CONSUMER_CONTROL, 0);
                 } else if (direction < 0) {
                     // volume down
                     send_hid_report(REPORT_ID_CONSUMER_CONTROL, HID_USAGE_CONSUMER_VOLUME_DECREMENT);
+                    sleep_ms(10);
+                    send_hid_report(REPORT_ID_CONSUMER_CONTROL, 0);
                 }
             }
         }

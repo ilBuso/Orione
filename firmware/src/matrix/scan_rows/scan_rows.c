@@ -45,6 +45,28 @@ uint8_t scan_rows(uint gpio) {
     return 0xFF; // no row found
 }
 
+// Helper function to check if a key is a consumer control key
+bool is_consumer_key(uint16_t key) {
+    // Media control keys
+    if (key == HID_USAGE_CONSUMER_PLAY_PAUSE ||
+        key == HID_USAGE_CONSUMER_SCAN_NEXT ||
+        key == HID_USAGE_CONSUMER_SCAN_PREVIOUS)
+        return true;
+    
+    // Brightness control keys
+    if (key == HID_USAGE_CONSUMER_BRIGHTNESS_DECREMENT ||
+        key == HID_USAGE_CONSUMER_BRIGHTNESS_INCREMENT)
+        return true;
+    
+    // Volume keys (if you want them too)
+    if (key == HID_USAGE_CONSUMER_MUTE ||
+        key == HID_USAGE_CONSUMER_VOLUME_INCREMENT ||
+        key == HID_USAGE_CONSUMER_VOLUME_DECREMENT)
+        return true;
+    
+    return false;
+}
+
 /**
  * @brief Build HID keycode array from pressed keys
  * 
@@ -56,8 +78,11 @@ uint8_t scan_rows(uint gpio) {
  * @param keycode Pointer to 6-byte array for regular keycodes
  */
 void build_keycode_array(uint8_t* modifier, uint8_t* keycode) {
-    // cuild keycode array from current pressed keys
+    static uint16_t last_consumer_code = 0;
+    
     uint8_t key_idx = 0;
+    uint16_t active_consumer_code = 0;
+    
     for (uint8_t i = 0; i < kbd_state.pressed_keys_count && key_idx < 6; i++) {
         uint8_t row = kbd_state.pressed_keys[i][0];
         uint8_t col = kbd_state.pressed_keys[i][1];
@@ -68,20 +93,32 @@ void build_keycode_array(uint8_t* modifier, uint8_t* keycode) {
         }
         
         // get HID keycode based on current layer
-        uint8_t hid_key = map_key_to_hid(row, col, kbd_state.current_layer);
-        
+        uint16_t hid_key = map_key_to_hid(row, col, kbd_state.current_layer);
+
         if (hid_key != 0) {
             // check if it's a modifier key
             if (hid_key >= HID_KEY_CONTROL_LEFT && hid_key <= HID_KEY_GUI_RIGHT) {
                 // set appropriate bit in modifier byte
-                *modifier |= (1 << (hid_key - HID_KEY_CONTROL_LEFT));
-            } else {
+                *modifier |= (1 << ((uint8_t)hid_key - HID_KEY_CONTROL_LEFT));
+            }
+            // check if it's a consumer control key
+            else if (is_consumer_key(hid_key)) {
+                active_consumer_code = hid_key;
+            } 
+            else {
                 // regular key
-                keycode[key_idx++] = hid_key;
+                keycode[key_idx++] = (uint8_t)hid_key;
             }
         }
     }
+    
+    // Send consumer control report only when code changes
+    if (active_consumer_code != last_consumer_code) {
+        send_hid_report(REPORT_ID_CONSUMER_CONTROL, active_consumer_code);
+        last_consumer_code = active_consumer_code;
+    }
 }
+
 /**
  * @brief Add a key press to the tracked state
  * 

@@ -22,7 +22,7 @@
  * @param layer Active layer (0 = base, 1 = Fn)
  * @return HID keycode value, or 0 if invalid/unmapped
  */
-uint8_t map_key_to_hid(uint8_t row, uint8_t col, uint8_t layer) {    
+uint16_t map_key_to_hid(uint8_t row, uint8_t col, uint8_t layer) {    
     // validate row and column
     if (row >= 5 && col >= 14) {
         return 0;
@@ -37,4 +37,4 @@ uint8_t map_key_to_hid(uint8_t row, uint8_t col, uint8_t layer) {
 
     // invalid layer
     return 0;
-}   
+}
