@@ -22,7 +22,13 @@ typedef struct {
     bool last_stable_state;  // true = HIGH/pressed, false = LOW/released
 } column_debounce_t;
 
+typedef struct {
+    alarm_id_t alarm_id;
+    bool last_stable_state;  // true = pressed (LOW), false = released (HIGH)
+} rotary_button_debounce_t;
+
 static column_debounce_t column_debounce[14] = {0};
+static rotary_button_debounce_t rotary_button_debounce = {0};
 
 // Alarm id for rotary button debounce timer
 static alarm_id_t rotary_button_alarm_id = 0;
@@ -223,19 +229,23 @@ void rotary_clk_callback(uint gpio, uint32_t events) {
  * 
  * Schedules a one-shot alarm to sample the button state after 
  * `ENCODER_BTN_DEBOUNCE_TIME` microseconds, avoiding false triggers
- * from mechanical bounce. The alarm callback verifies the stable
- * button state before registering a press event.
+ * from mechanical bounce. Cancels any pending alarm to ensure the
+ * most recent edge transition is processed. The alarm callback verifies
+ * the stable button state and registers both press and release events.
  * 
  * @param gpio GPIO pin number (should be ROTARY_SW)
  * @param events Interrupt event flags
  */
 void rotary_button_callback(uint gpio, uint32_t events) {
-    // If a debounce alarm already scheduled for the button, ignore extra IRQs
-    if (rotary_button_alarm_id != 0) return;
+    // Cancel pending alarm if state is changing
+    if (rotary_button_debounce.alarm_id != 0) {
+        cancel_alarm(rotary_button_debounce.alarm_id);
+        rotary_button_debounce.alarm_id = 0;
+    }
 
     alarm_id_t aid = add_alarm_in_us(ENCODER_BTN_DEBOUNCE_TIME, rotary_button_debounce_alarm, NULL, true);
     if (aid >= 0) {
-        rotary_button_alarm_id = aid;
+        rotary_button_debounce.alarm_id = aid;
     }
 }
 
@@ -243,28 +253,40 @@ void rotary_button_callback(uint gpio, uint32_t events) {
  * @brief Alarm callback to process stabilized button state after debounce
  *
  * This alarm callback executes after `ENCODER_BTN_DEBOUNCE_TIME` microseconds
- * and reads the button pin once to verify it's stably LOW (pressed).
- * Only registers a button press if the pin remains LOW after debounce.
- * The alarm is one-shot; its id is cleared before performing state updates.
+ * and reads the button pin to verify its stable state (LOW = pressed, HIGH = released).
+ * Registers both press and release events by setting button_pressed accordingly
+ * and setting has_event flag. State changes are tracked to avoid processing
+ * duplicate events. The alarm is one-shot; its id is cleared before performing
+ * state updates.
  *
  * @param id Alarm identifier for this callback invocation
  * @param user_data Unused for button debouncing
  * @return 0 (one-shot)
  */
 static int64_t rotary_button_debounce_alarm(alarm_id_t id, void *user_data) {
-    // Clear stored alarm id
-    rotary_button_alarm_id = 0;
+    rotary_button_debounce.alarm_id = 0;
 
-    // Read stable button state (button is active LOW)
-    bool stable_low = (gpio_get(ROTARY_SW) == 0);
+    // Button is active LOW (pressed = 0, released = 1)
+    bool current_state = (gpio_get(ROTARY_SW) == 0);
+    
+    // Only process if state changed
+    if (current_state == rotary_button_debounce.last_stable_state) {
+        return 0;
+    }
+    
+    rotary_button_debounce.last_stable_state = current_state;
 
-    if (stable_low) {
-        // Button is still pressed after debounce
+    if (current_state) {
+        // Button pressed (transition HIGH→LOW)
         rotary_state.button_pressed = true;
+        rotary_state.has_event = true;
+    } else {
+        // Button released (transition LOW→HIGH)
+        rotary_state.button_pressed = false;
         rotary_state.has_event = true;
     }
 
-    return 0; // one-shot
+    return 0;
 }
 
 //--------------------------------------------------------------------+

@@ -96,30 +96,25 @@ void hid_task(void) {
             int8_t direction;
             bool button_pressed;
             
-            // get state of rotary encoder
             rotary_encoder_get_state(&direction, &button_pressed);
             
-            // check if rotary encoder is pressed or is turning
-            if (direction != 0 || button_pressed) {
-                if (!tud_hid_ready()) return;
-                
-                if (button_pressed) {
-                    // mute/unmute
-                    send_hid_report(REPORT_ID_CONSUMER_CONTROL, HID_USAGE_CONSUMER_MUTE);
-                    sleep_ms(10);
-                    send_hid_report(REPORT_ID_CONSUMER_CONTROL, 0);
-                } else if (direction > 0) {
-                    // volume up
-                    send_hid_report(REPORT_ID_CONSUMER_CONTROL, HID_USAGE_CONSUMER_VOLUME_INCREMENT);
-                    sleep_ms(10);
-                    send_hid_report(REPORT_ID_CONSUMER_CONTROL, 0);
-                } else if (direction < 0) {
-                    // volume down
-                    send_hid_report(REPORT_ID_CONSUMER_CONTROL, HID_USAGE_CONSUMER_VOLUME_DECREMENT);
-                    sleep_ms(10);
-                    send_hid_report(REPORT_ID_CONSUMER_CONTROL, 0);
-                }
+            if (button_pressed) {
+                // mute/unmute
+                send_hid_report(REPORT_ID_CONSUMER_CONTROL, HID_USAGE_CONSUMER_MUTE);
+                sleep_ms(10);
+                send_hid_report(REPORT_ID_CONSUMER_CONTROL, 0);
+            } else if (direction > 0) {
+                // volume up
+                send_hid_report(REPORT_ID_CONSUMER_CONTROL, HID_USAGE_CONSUMER_VOLUME_INCREMENT);
+                sleep_ms(10);
+                send_hid_report(REPORT_ID_CONSUMER_CONTROL, 0);
+            } else if (direction < 0) {
+                // volume down
+                send_hid_report(REPORT_ID_CONSUMER_CONTROL, HID_USAGE_CONSUMER_VOLUME_DECREMENT);
+                sleep_ms(10);
+                send_hid_report(REPORT_ID_CONSUMER_CONTROL, 0);
             }
+
         }
     }
 }

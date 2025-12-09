@@ -170,7 +170,7 @@ void init_keyboard_interrupts(void) {
  * The callback handler is shared with keyboard interrupts.
  */
 void init_rotary_encoder_interrupts(void) {
-    gpio_set_irq_enabled(ROTARY_SW, GPIO_IRQ_EDGE_FALL, true);
+    gpio_set_irq_enabled(ROTARY_SW, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true);
     gpio_set_irq_enabled(ROTARY_CLK, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true);
 }
 
