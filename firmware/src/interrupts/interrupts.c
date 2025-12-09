@@ -15,8 +15,10 @@
 //--------------------------------------------------------------------+
 
 static uint32_t last_interrupt_time[14] = {0};
-// Alarm ids for per-column debounce timers (0 == none)
+// Alarm ids for per-column debounce timers
 static alarm_id_t column_alarm_id[14] = {0};
+// Alarm id for rotary button debounce timer
+static alarm_id_t rotary_button_alarm_id = 0;
 extern keyboard_state_t kbd_state;
 
 extern uint32_t last_encoder_time;
@@ -29,6 +31,7 @@ extern void keyboard_remove_key(uint8_t row, uint8_t col);
 
 // forward declaration for debounce alarm callback
 static int64_t column_debounce_alarm(alarm_id_t id, void *user_data);
+static int64_t rotary_button_debounce_alarm(alarm_id_t id, void *user_data);
 
 //--------------------------------------------------------------------+
 
@@ -175,26 +178,50 @@ void rotary_clk_callback(uint gpio, uint32_t events) {
 /**
  * @brief Rotary encoder button interrupt callback
  * 
- * Handles button press detection on the rotary encoder's integrated switch.
- * Uses falling edge detection (button is active LOW) with debouncing.
+ * Schedules a one-shot alarm to sample the button state after 
+ * `ENCODER_BTN_DEBOUNCE_TIME` microseconds, avoiding false triggers
+ * from mechanical bounce. The alarm callback verifies the stable
+ * button state before registering a press event.
  * 
  * @param gpio GPIO pin number (should be ROTARY_SW)
  * @param events Interrupt event flags
  */
 void rotary_button_callback(uint gpio, uint32_t events) {
-    uint32_t current_time = time_us_32();
-    
-    // Debounce
-    if (current_time - last_button_time < ENCODER_BTN_DEBOUNCE_TIME) {
-        return;
+    // If a debounce alarm already scheduled for the button, ignore extra IRQs
+    if (rotary_button_alarm_id != 0) return;
+
+    alarm_id_t aid = add_alarm_in_us(ENCODER_BTN_DEBOUNCE_TIME, rotary_button_debounce_alarm, NULL, true);
+    if (aid >= 0) {
+        rotary_button_alarm_id = aid;
     }
-    last_button_time = current_time;
-    
-    // Button pressed
-    if (events & GPIO_IRQ_EDGE_FALL) {
+}
+
+/**
+ * @brief Alarm callback to process stabilized button state after debounce
+ *
+ * This alarm callback executes after `ENCODER_BTN_DEBOUNCE_TIME` microseconds
+ * and reads the button pin once to verify it's stably LOW (pressed).
+ * Only registers a button press if the pin remains LOW after debounce.
+ * The alarm is one-shot; its id is cleared before performing state updates.
+ *
+ * @param id Alarm identifier for this callback invocation
+ * @param user_data Unused for button debouncing
+ * @return 0 (one-shot)
+ */
+static int64_t rotary_button_debounce_alarm(alarm_id_t id, void *user_data) {
+    // Clear stored alarm id
+    rotary_button_alarm_id = 0;
+
+    // Read stable button state (button is active LOW)
+    bool stable_low = (gpio_get(ROTARY_SW) == 0);
+
+    if (stable_low) {
+        // Button is still pressed after debounce
         rotary_state.button_pressed = true;
         rotary_state.has_event = true;
     }
+
+    return 0; // one-shot
 }
 
 //--------------------------------------------------------------------+
