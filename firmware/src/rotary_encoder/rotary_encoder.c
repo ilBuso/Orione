@@ -11,10 +11,10 @@
 
 //--------------------------------------------------------------------+
 
-uint32_t last_encoder_time = 0;             ///< Timestamp of last encoder rotation event
-uint32_t last_button_time = 0;              ///< Timestamp of last button press event
-uint8_t last_clk_state = 1;                 ///< Previous state of CLK pin for edge detection
-rotary_encoder_state_t rotary_state = {0};  ///< Current encoder state
+uint32_t last_encoder_time = 0;             // Timestamp of last encoder rotation event
+uint32_t last_button_time = 0;              // Timestamp of last button press event
+uint8_t last_clk_state = 1;                 // Previous state of CLK pin for edge detection
+rotary_encoder_state_t rotary_state = {0};  // Current encoder state
 
 
 //--------------------------------------------------------------------+
@@ -46,7 +46,6 @@ void rotary_encoder_get_state(int8_t* direction, bool* button_pressed) {
     // Clear solo direction, button_pressed rimane per indicare press vs release
     rotary_state.direction = 0;
     rotary_state.has_event = false;
-    // NON cancellare button_pressed qui - serve per distinguere press da release
     
     restore_interrupts(status);
 }
